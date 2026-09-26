@@ -57,6 +57,15 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   Motifs par defaut poses de la meme facon (`services/motifsService.ts`) —
   necessaire car `npm run seed` est un script de dev, pas le premier lancement reel.
   Nettoyage de la saisie douchette dans `services/scanUtils.ts`.
+- **Parametres** (`services/pinService.ts`, `parametresService.ts`, `motifsService.ts`
+  + `renderer/src/screens/Parametres/`) : zone protegee par un code PIN (scrypt +
+  sel, jamais stocke en clair, jamais verifie a nouveau une fois la zone quittee —
+  pas de session persistante, cf. `ParametresGate.tsx`). Le PIN se definit tout
+  seul au tout premier acces (pas de vraie authentification, juste une barriere
+  contre la manipulation par un usager). CRUD complet des motifs (creation,
+  renommage, icone/couleur, activation, reordonnancement drag & drop + fleches),
+  tranches d'age et delais stockes en JSON/texte dans `parametres`, onglets Import
+  Syracuse / Lignes a corriger / Historique reutilisent les ecrans de la phase 2.
 
 ## Donnees et confidentialite
 
@@ -104,7 +113,8 @@ code du process main.**
 ## Etat d'avancement
 
 Voir le plan approuve dans la conversation Claude Code pour le detail des 7 phases.
-Phases 1 (initialisation), 2 (import Syracuse) et 3 (ecran d'accueil) terminees.
-Phase 4 (parametres + code PIN) a venir. La barre de navigation actuelle
-(Accueil / Import Syracuse / Lignes a corriger) est provisoire : Import et Lignes
-a corriger doivent passer derriere le code PIN de la phase 4.
+Phases 1 (initialisation), 2 (import Syracuse), 3 (ecran d'accueil) et 4
+(parametres + code PIN) terminees. Phase 5 (tableau de bord statistiques) a venir.
+La navigation est desormais : Accueil (libre) / Parametres (protege par PIN, avec
+sous-onglets General, Motifs, Import Syracuse, Lignes a corriger, Historique,
+Securite).

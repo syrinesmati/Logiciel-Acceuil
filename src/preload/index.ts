@@ -25,6 +25,19 @@ const api: ApiRenderer = {
     compteurAujourdhui: () => ipcRenderer.invoke(IPC.accueilCompteurAujourdhui),
     rechercherParNom: (requete) => ipcRenderer.invoke(IPC.accueilRechercherParNom, requete),
     obtenirParametres: () => ipcRenderer.invoke(IPC.accueilObtenirParametres)
+  },
+  parametres: {
+    pinEstDefini: () => ipcRenderer.invoke(IPC.parametresPinEstDefini),
+    definirPin: (pin) => ipcRenderer.invoke(IPC.parametresDefinirPin, pin),
+    verifierPin: (pin) => ipcRenderer.invoke(IPC.parametresVerifierPin, pin),
+    changerPin: (payload) => ipcRenderer.invoke(IPC.parametresChangerPin, payload),
+    obtenirGeneraux: () => ipcRenderer.invoke(IPC.parametresObtenirGeneraux),
+    enregistrerGeneraux: (payload) => ipcRenderer.invoke(IPC.parametresEnregistrerGeneraux, payload),
+    listerMotifs: () => ipcRenderer.invoke(IPC.parametresListerMotifs),
+    creerMotif: (payload) => ipcRenderer.invoke(IPC.parametresCreerMotif, payload),
+    modifierMotif: (payload) => ipcRenderer.invoke(IPC.parametresModifierMotif, payload),
+    activerMotif: (payload) => ipcRenderer.invoke(IPC.parametresActiverMotif, payload),
+    reordonnerMotifs: (ordreIds) => ipcRenderer.invoke(IPC.parametresReordonnerMotifs, ordreIds)
   }
 }
 

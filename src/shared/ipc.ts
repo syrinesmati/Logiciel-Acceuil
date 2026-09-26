@@ -15,6 +15,7 @@ import type {
   ResultatInscription,
   ResultatRecherche
 } from './accueil'
+import type { MotifAdmin, ParametresGeneraux, ResultatChangementPin } from './parametres'
 
 /** Noms de canaux IPC centralises pour eviter les fautes de frappe entre main/preload/renderer. */
 export const IPC = {
@@ -34,7 +35,18 @@ export const IPC = {
   accueilEnregistrerVisite: 'accueil:enregistrer-visite',
   accueilCompteurAujourdhui: 'accueil:compteur-aujourdhui',
   accueilRechercherParNom: 'accueil:rechercher-par-nom',
-  accueilObtenirParametres: 'accueil:obtenir-parametres'
+  accueilObtenirParametres: 'accueil:obtenir-parametres',
+  parametresPinEstDefini: 'parametres:pin-est-defini',
+  parametresDefinirPin: 'parametres:definir-pin',
+  parametresVerifierPin: 'parametres:verifier-pin',
+  parametresChangerPin: 'parametres:changer-pin',
+  parametresObtenirGeneraux: 'parametres:obtenir-generaux',
+  parametresEnregistrerGeneraux: 'parametres:enregistrer-generaux',
+  parametresListerMotifs: 'parametres:lister-motifs',
+  parametresCreerMotif: 'parametres:creer-motif',
+  parametresModifierMotif: 'parametres:modifier-motif',
+  parametresActiverMotif: 'parametres:activer-motif',
+  parametresReordonnerMotifs: 'parametres:reordonner-motifs'
 } as const
 
 export interface ApiRenderer {
@@ -74,6 +86,24 @@ export interface ApiRenderer {
     compteurAujourdhui: () => Promise<number>
     rechercherParNom: (requete: string) => Promise<AbonnePourFiche[]>
     obtenirParametres: () => Promise<ParametresAccueil>
+  }
+  parametres: {
+    pinEstDefini: () => Promise<boolean>
+    definirPin: (pin: string) => Promise<void>
+    verifierPin: (pin: string) => Promise<boolean>
+    changerPin: (payload: { ancienPin: string; nouveauPin: string }) => Promise<ResultatChangementPin>
+    obtenirGeneraux: () => Promise<ParametresGeneraux>
+    enregistrerGeneraux: (payload: ParametresGeneraux) => Promise<void>
+    listerMotifs: () => Promise<MotifAdmin[]>
+    creerMotif: (payload: { libelle: string; icone: string; couleur: string }) => Promise<MotifAdmin>
+    modifierMotif: (payload: {
+      id: number
+      libelle: string
+      icone: string
+      couleur: string
+    }) => Promise<MotifAdmin>
+    activerMotif: (payload: { id: number; actif: boolean }) => Promise<MotifAdmin>
+    reordonnerMotifs: (ordreIds: number[]) => Promise<void>
   }
 }
 

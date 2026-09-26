@@ -75,3 +75,49 @@ export const correctionManuelleSchema = z.object({
   telephone: z.string().nullable(),
   email: z.string().nullable()
 })
+
+const PIN_REGEX = /^\d{4,6}$/
+
+export const pinSchema = z.object({
+  pin: z.string().regex(PIN_REGEX, 'Le code PIN doit comporter 4 a 6 chiffres')
+})
+
+export const changerPinSchema = z.object({
+  ancienPin: z.string().min(1),
+  nouveauPin: z.string().regex(PIN_REGEX, 'Le code PIN doit comporter 4 a 6 chiffres')
+})
+
+export const trancheAgeSchema = z.object({
+  id: z.string().min(1),
+  libelle: z.string().min(1),
+  min: z.number().int().min(0),
+  max: z.number().int().nullable()
+})
+
+export const parametresGenerauxSchema = z.object({
+  nomBibliotheque: z.string().min(1, 'Le nom de la bibliotheque est obligatoire'),
+  delaiAntiDoubleScanSecondes: z.number().int().min(1),
+  delaiRetourAutoSecondes: z.number().int().min(5),
+  tranchesAge: z.array(trancheAgeSchema)
+})
+
+export const motifEntreeSchema = z.object({
+  libelle: z.string().min(1, 'Le libelle est obligatoire'),
+  icone: z.string().min(1),
+  couleur: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/, 'Couleur invalide (format hexadecimal attendu)')
+})
+
+export const modifierMotifSchema = motifEntreeSchema.extend({
+  id: z.number()
+})
+
+export const activerMotifSchema = z.object({
+  id: z.number(),
+  actif: z.boolean()
+})
+
+export const reordonnerMotifsSchema = z.object({
+  ordreIds: z.array(z.number()).min(1)
+})

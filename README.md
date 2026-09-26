@@ -55,10 +55,25 @@ visites). `F2` ouvre une recherche par nom (tolerante aux variantes arabes).
 Sans action pendant 30 secondes (delai configurable), l'ecran revient
 automatiquement au scan.
 
+## Parametres (protege par code PIN)
+
+Onglet **Parametres**. Au tout premier acces, l'app demande de definir un code
+PIN (4 a 6 chiffres, stocke hache — jamais en clair). Ensuite, le PIN est
+redemande a chaque acces (pas de session gardee en memoire, c'est un poste
+partage). Sous-onglets :
+
+- **General** : nom de la bibliotheque, delai anti-double-scan, delai de
+  retour automatique, tranches d'age (ajout/suppression/modification).
+- **Motifs** : creation, renommage, choix d'icone et de couleur, activation
+  ou desactivation (jamais de suppression physique), reordonnancement par
+  glisser-deposer ou par les fleches.
+- **Import Syracuse** / **Lignes a corriger** / **Historique des imports** :
+  memes ecrans qu'avant, desormais proteges.
+- **Securite** : changement du code PIN.
+
 ## Import Syracuse
 
-Onglet **Import Syracuse** de l'app. Deux modes de fichier sont detectes
-automatiquement :
+Deux modes de fichier sont detectes automatiquement :
 
 1. **Export structure** (plusieurs colonnes avec en-tetes, ex. `Code-barres,
    Prenom, Nom, Date de naissance, ...`) : un mappage des colonnes est propose

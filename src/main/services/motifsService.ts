@@ -1,7 +1,8 @@
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import type { AppDb } from '../db/client'
 import { motifs } from '../db/schema'
 import type { Motif } from '@shared/accueil'
+import type { MotifAdmin } from '@shared/parametres'
 
 /** Valeurs initiales des motifs de visite (voir cahier des charges, section 3). */
 const MOTIFS_PAR_DEFAUT = [
@@ -30,4 +31,49 @@ export function listerMotifsActifs(db: AppDb): Motif[] {
     .where(eq(motifs.actif, true))
     .orderBy(motifs.ordre)
     .all()
+}
+
+/** Vue complete pour l'ecran Parametres : inclut les motifs desactives. */
+export function listerTousLesMotifs(db: AppDb): MotifAdmin[] {
+  return db.select().from(motifs).orderBy(motifs.ordre).all()
+}
+
+export interface MotifEntree {
+  libelle: string
+  icone: string
+  couleur: string
+}
+
+export function creerMotif(entree: MotifEntree, db: AppDb): MotifAdmin {
+  const dernier = db.select({ ordre: motifs.ordre }).from(motifs).orderBy(desc(motifs.ordre)).limit(1).get()
+  return db
+    .insert(motifs)
+    .values({ ...entree, ordre: (dernier?.ordre ?? 0) + 1, actif: true })
+    .returning()
+    .get()
+}
+
+export function modifierMotif(
+  id: number,
+  entree: MotifEntree,
+  db: AppDb
+): MotifAdmin {
+  const ligne = db.update(motifs).set(entree).where(eq(motifs.id, id)).returning().get()
+  if (!ligne) throw new Error(`Motif introuvable (id ${id})`)
+  return ligne
+}
+
+export function activerDesactiverMotif(id: number, actif: boolean, db: AppDb): MotifAdmin {
+  const ligne = db.update(motifs).set({ actif }).where(eq(motifs.id, id)).returning().get()
+  if (!ligne) throw new Error(`Motif introuvable (id ${id})`)
+  return ligne
+}
+
+/** Reordonne les motifs selon l'ordre des id fournis (voir 4.4, drag & drop). */
+export function reordonnerMotifs(ordreIds: number[], db: AppDb): void {
+  db.transaction((tx) => {
+    ordreIds.forEach((id, index) => {
+      tx.update(motifs).set({ ordre: index + 1 }).where(eq(motifs.id, id)).run()
+    })
+  })
 }

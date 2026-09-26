@@ -1,38 +1,35 @@
 import { useState } from 'react'
 import type { JSX } from 'react'
+import { Settings } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { AccueilScreen } from '@renderer/screens/Accueil/AccueilScreen'
-import { ImportScreen } from '@renderer/screens/Import/ImportScreen'
-import { LignesACorrigerScreen } from '@renderer/screens/Import/LignesACorrigerScreen'
+import { ParametresScreen } from '@renderer/screens/Parametres/ParametresScreen'
 
-type Ecran = 'accueil' | 'import' | 'lignesACorriger'
+type Ecran = 'accueil' | 'parametres'
 
 function App(): JSX.Element {
   const [ecran, setEcran] = useState<Ecran>('accueil')
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      {/* Barre provisoire : sera remplacee par un acces Parametres protege par code PIN (phase 4). */}
-      <nav className="flex items-center gap-2 border-b border-border p-3">
+      <nav className="flex items-center justify-between border-b border-border p-3">
         <Button variant={ecran === 'accueil' ? 'default' : 'ghost'} size="sm" onClick={() => setEcran('accueil')}>
           Accueil
         </Button>
-        <Button variant={ecran === 'import' ? 'default' : 'ghost'} size="sm" onClick={() => setEcran('import')}>
-          Import Syracuse
-        </Button>
         <Button
-          variant={ecran === 'lignesACorriger' ? 'default' : 'ghost'}
+          variant={ecran === 'parametres' ? 'default' : 'ghost'}
           size="sm"
-          onClick={() => setEcran('lignesACorriger')}
+          onClick={() => setEcran('parametres')}
         >
-          Lignes à corriger
+          <Settings className="h-4 w-4" />
+          Parametres
         </Button>
       </nav>
 
       <div className="flex-1">
         {ecran === 'accueil' && <AccueilScreen />}
-        {ecran === 'import' && <ImportScreen onVoirLignesACorriger={() => setEcran('lignesACorriger')} />}
-        {ecran === 'lignesACorriger' && <LignesACorrigerScreen onRetour={() => setEcran('import')} />}
+        {/* Demontee quand on quitte l'onglet : le PIN est redemande a chaque nouvel acces. */}
+        {ecran === 'parametres' && <ParametresScreen />}
       </div>
     </div>
   )
