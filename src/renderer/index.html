@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      Pas de CSP statique ici : Vite injecte en dev un script inline (React Fast
+      Refresh) qu'une CSP stricte bloquerait. La CSP de production est posee
+      dynamiquement par le process main (voir src/main/index.ts), qui peut se
+      permettre d'etre stricte car il n'y a alors ni HMR ni script inline.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accueil Mediatheque</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

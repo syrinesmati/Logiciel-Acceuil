@@ -1,0 +1,19 @@
+node_modules/
+dist/
+dist-electron/
+out/
+release/
+build/*.exe
+*.log
+.DS_Store
+Thumbs.db
+
+# Base de donnees locales et fichiers de log applicatifs
+*.sqlite
+*.sqlite3
+*.db
+
+# JAMAIS de vraies donnees d'abonnes dans le depot
+Archimed.Search.Export_639260300114978837_35379.xlsx
+*.reel.xlsx
+/data-locale-reelle/
