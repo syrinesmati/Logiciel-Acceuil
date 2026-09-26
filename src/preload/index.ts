@@ -5,6 +5,16 @@ import { IPC, type ApiRenderer } from '@shared/ipc'
 const api: ApiRenderer = {
   systeme: {
     compteursDemarrage: () => ipcRenderer.invoke(IPC.systemeCompteursDemarrage)
+  },
+  import: {
+    choisirFichier: () => ipcRenderer.invoke(IPC.importChoisirFichier),
+    analyserFichier: (payload) => ipcRenderer.invoke(IPC.importAnalyserFichier, payload),
+    executerImport: (payload) => ipcRenderer.invoke(IPC.importExecuterImport, payload),
+    exporterErreurs: (payload) => ipcRenderer.invoke(IPC.importExporterErreurs, payload),
+    listerHistorique: () => ipcRenderer.invoke(IPC.importListerHistorique),
+    listerLignesACorriger: () => ipcRenderer.invoke(IPC.importListerLignesACorriger),
+    corrigerLigne: (payload) => ipcRenderer.invoke(IPC.importCorrigerLigne, payload),
+    ignorerLigne: (id) => ipcRenderer.invoke(IPC.importIgnorerLigne, id)
   }
 }
 

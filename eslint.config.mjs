@@ -24,7 +24,11 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': 'warn'
+      'react-refresh/only-export-components': 'warn',
+      // Le fetch-on-mount via IPC (window.api.*) est notre seul mecanisme de
+      // chargement de donnees (pas de lib de data-fetching) : ce pattern est
+      // volontaire, pas une erreur.
+      'react-hooks/set-state-in-effect': 'off'
     }
   }
 )

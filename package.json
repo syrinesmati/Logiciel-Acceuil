@@ -17,6 +17,7 @@
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
     "seed": "tsx src/main/db/seed.ts",
+    "fixture:generer": "tsx scripts/genererFixtureImport.ts",
     "build:win": "npm run build && electron-builder --win"
   },
   "dependencies": {

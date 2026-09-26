@@ -20,6 +20,8 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
 - `npm run typecheck` / `npm run lint` / `npm run format` — verifications avant chaque
   fin de phase.
 - `npm run build:win` — build + genere l'installeur Windows (NSIS) via electron-builder.
+- `npm run fixture:generer` — regenere `fixtures/exemple_import_anonymise.xlsx` (mode
+  colonne unique, tous les cas d'erreur du 4.3) depuis `scripts/genererFixtureImport.ts`.
 
 ## Architecture
 
@@ -39,6 +41,14 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   meme interface sans toucher au reste de l'app.
 - Suppression logique uniquement (`actif = false`) pour `abonnes` et `motifs` : on ne
   supprime jamais une ligne referencee par des visites (historique de stats).
+- **Import Syracuse** (`src/main/services/importParser/`) : fonctions pures et testables
+  independamment de la DB — `lecteurFichier` (xlsx/csv -> lignes brutes), `detectionFormat`
+  (colonne unique vs mapping de colonnes + suggestion de mappage), `parseurColonneUnique`
+  (tokenizer tolerant), `parseurColonnesMappees`, `dateRepair` (reparation de dates),
+  `conflits` (numero en conflit, fichier + base), `exportErreurs` (classeur Excel des
+  lignes en erreur). `services/importService.ts` orchestre ces fonctions et ecrit en
+  base (transaction unique). IPC dans `ipc/import.ts`, ecrans dans
+  `renderer/src/screens/Import/`.
 
 ## Donnees et confidentialite
 
@@ -58,6 +68,19 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   normalisation de recherche (`services/nomArabe.ts`) et l'affichage (`dir="auto"`)
   doivent bien fonctionner pour les deux, pas seulement l'arabe.
 
+## Piege connu du bundler (process main)
+
+Le plugin CJS-shim d'electron-vite (`renderChunk`, format ESM) localise "le dernier
+import" du bundle final avec une **regex sur le texte brut**, pas un vrai parseur.
+Si une chaine de caracteres du code source (ex: un nom de feuille Excel) contient le
+mot `import` immediatement suivi d'un guillemet fermant (ex: `'Erreurs import'`), la
+regex la confond avec une instruction `import` et insere le shim CJS en plein milieu
+du fichier, cassant tout le bundle main avec une erreur esbuild `Unterminated string
+literal` sans rapport apparent avec la vraie cause. Deja rencontre avec le nom de
+feuille `'Erreurs import'` dans `exportErreurs.ts` (renomme en `'Lignes a corriger'`).
+**Evitez d'avoir le mot "import" juste avant un guillemet fermant dans une chaine du
+code du process main.**
+
 ## Conventions
 
 - TypeScript strict partout. Alias : `@main/*`, `@renderer/*`, `@shared/*`.
@@ -73,4 +96,5 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
 ## Etat d'avancement
 
 Voir le plan approuve dans la conversation Claude Code pour le detail des 7 phases.
-Phase 1 (initialisation) en cours.
+Phase 1 (initialisation) et phase 2 (import Syracuse) terminees. Phase 3 (ecran
+d'accueil) a venir.

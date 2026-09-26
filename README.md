@@ -43,17 +43,30 @@ node node_modules/electron/install.js
 
 ## Import Syracuse
 
-(Detaille en phase 2.) Deux modes d'import seront disponibles depuis l'ecran
-Parametres > Import :
+Onglet **Import Syracuse** de l'app. Deux modes de fichier sont detectes
+automatiquement :
 
-1. **Export structure** (plusieurs colonnes avec en-tetes) : mappage manuel des
-   colonnes vers les champs de l'app.
-2. **Export une seule colonne** (texte libre par ligne) : parseur tolerant qui
-   detecte numero d'abonne / date / telephone / email et signale les lignes
-   douteuses pour correction manuelle.
+1. **Export structure** (plusieurs colonnes avec en-tetes, ex. `Code-barres,
+   Prenom, Nom, Date de naissance, ...`) : un mappage des colonnes est propose
+   automatiquement (modifiable) avant l'apercu.
+2. **Export une seule colonne** (texte libre par ligne, un abonne par ligne) :
+   parseur tolerant par tokens qui detecte numero d'abonne / nom / date /
+   telephone / email dans n'importe quel ordre, et repare automatiquement les
+   erreurs de saisie de date sans ambiguite (voir `dateRepair.ts`).
 
-Un rapport (crees / mis a jour / corriges / a verifier) est genere a chaque import,
-exportable en Excel pour transmettre les corrections a faire dans Syracuse.
+Chaque ligne obtient un statut **OK / Corrigee / A verifier / Rejetee** (voir
+cahier des charges 4.3). L'ecran d'apercu affiche un tableau filtrable par statut
+avant confirmation. L'import ecrit en base dans une seule transaction : upsert
+sur `numero_abonne` (Syracuse fait foi, sauf le champ `sexe` jamais fourni par
+l'import), et les lignes rejetees (numero introuvable ou en conflit) partent
+dans l'ecran **Lignes a corriger** pour une reprise manuelle. Un rapport
+(crees / mis a jour / corriges / rejetes) est affiche apres chaque import, avec
+un bouton pour exporter les lignes en erreur en Excel (a corriger dans
+Syracuse).
+
+Pour tester : `npm run fixture:generer` regenere `fixtures/exemple_import_anonymise.xlsx`
+(fichier synthetique reproduisant chaque cas d'erreur du cahier des charges),
+utilisable directement depuis l'ecran d'import.
 
 ## Tests
 
