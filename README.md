@@ -41,6 +41,20 @@ node node_modules/electron/install.js
   ```
   Les migrations sont appliquees automatiquement au demarrage de l'app.
 
+## Ecran d'accueil
+
+Onglet **Accueil** (ecran par defaut). Scannez une carte (ou tapez le numero au
+clavier puis Entree) : la fiche de l'abonne s'affiche (nom, age), avec des
+boutons Homme/Femme si le sexe n'est pas renseigne. Choisissez un ou plusieurs
+motifs (tuiles cliquables ou touches `1`-`9`), puis validez (`Entree`) ou
+annulez (`Echap`). Si le numero est deja passe il y a moins de 5 minutes
+(delai configurable), un avertissement demande confirmation avant de
+continuer. Si le numero est inconnu, un formulaire d'inscription rapide est
+propose (l'abonne sera remplace au prochain import Syracuse, sans perdre ses
+visites). `F2` ouvre une recherche par nom (tolerante aux variantes arabes).
+Sans action pendant 30 secondes (delai configurable), l'ecran revient
+automatiquement au scan.
+
 ## Import Syracuse
 
 Onglet **Import Syracuse** de l'app. Deux modes de fichier sont detectes

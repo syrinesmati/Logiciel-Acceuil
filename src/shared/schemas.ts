@@ -41,6 +41,32 @@ export const analyserFichierSchema = z.object({
   mappage: mappageColonnesSchema.optional()
 })
 
+export const rechercherNumeroSchema = z.object({
+  numero: z.string().min(1)
+})
+
+export const inscriptionRapideSchema = z.object({
+  numeroAbonne: z.string().min(1, "Le numero d'abonne est obligatoire"),
+  nomComplet: z.string().min(1, 'Le nom est obligatoire'),
+  dateNaissance: z.string().nullable(),
+  sexe: z.enum(['H', 'F']).nullable(),
+  telephone: z.string().nullable()
+})
+
+export const completerSexeSchema = z.object({
+  abonneId: z.number(),
+  sexe: z.enum(['H', 'F'])
+})
+
+export const enregistrerVisiteSchema = z.object({
+  abonneId: z.number(),
+  motifIds: z.array(z.number()).min(1, 'Selectionnez au moins un motif')
+})
+
+export const rechercherParNomSchema = z.object({
+  requete: z.string().min(1)
+})
+
 export const correctionManuelleSchema = z.object({
   id: z.number(),
   numeroAbonne: z.string().min(1, "Le numero d'abonne est obligatoire"),

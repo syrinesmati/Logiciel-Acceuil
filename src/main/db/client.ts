@@ -6,6 +6,10 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import * as schema from './schema'
 
 export type AppDb = ReturnType<typeof drizzle<typeof schema>>
+/** Type d'une transaction (le `tx` recu dans `db.transaction((tx) => ...)`). */
+export type AppTransaction = Parameters<Parameters<AppDb['transaction']>[0]>[0]
+/** A utiliser pour toute fonction de service appelable aussi bien avec `db` qu'avec un `tx`. */
+export type AppDbOuTransaction = AppDb | AppTransaction
 
 let dbInstance: AppDb | null = null
 let sqliteInstance: Database.Database | null = null

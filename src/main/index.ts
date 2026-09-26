@@ -4,16 +4,23 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { getDb, closeDb } from './db/client'
 import { enregistrerTousLesIpc } from './ipc'
 import { Logger } from './services/logger'
+import { assurerMotifsParDefaut } from './services/motifsService'
+import { assurerParametresParDefaut } from './services/parametresService'
 
 /**
  * CSP posee dynamiquement plutot que dans index.html : en dev, le renderer est
- * charge depuis le serveur Vite (localhost) qui a besoin d'un script inline pour
- * le Fast Refresh ; en production il est charge en `file://` sans HMR, donc une
- * politique stricte ne casse rien.
+ * charge depuis le serveur Vite (localhost, port variable si 5173 est deja pris)
+ * qui a besoin d'un script inline pour le Fast Refresh ; en production il est
+ * charge en `file://` sans HMR, donc une politique stricte ne casse rien.
  */
 function appliquerCsp(): void {
+  const origineDev = process.env['ELECTRON_RENDERER_URL']
+    ? new URL(process.env['ELECTRON_RENDERER_URL']).origin
+    : 'http://localhost:5173'
+  const origineDevWs = origineDev.replace('http://', 'ws://')
+
   const politique = is.dev
-    ? "default-src 'self' http://localhost:5173 ws://localhost:5173; script-src 'self' 'unsafe-inline' http://localhost:5173; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:"
+    ? `default-src 'self' ${origineDev} ${origineDevWs}; script-src 'self' 'unsafe-inline' ${origineDev}; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:`
     : "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:"
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -78,6 +85,8 @@ app.whenReady().then(() => {
 
   try {
     const db = getDb(dbPath, migrationsFolder)
+    assurerMotifsParDefaut(db)
+    assurerParametresParDefaut(db)
     enregistrerTousLesIpc(db)
   } catch (erreur) {
     logger.error("Echec de l'initialisation de la base de donnees", erreur)

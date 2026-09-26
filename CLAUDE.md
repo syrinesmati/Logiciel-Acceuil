@@ -49,6 +49,14 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   lignes en erreur). `services/importService.ts` orchestre ces fonctions et ecrit en
   base (transaction unique). IPC dans `ipc/import.ts`, ecrans dans
   `renderer/src/screens/Import/`.
+- **Ecran d'accueil** (`src/main/services/accueilService.ts` + `renderer/src/screens/Accueil/`) :
+  machine a etats simple (`scan` / `confirmationDoubleScan` / `fiche` /
+  `inscriptionRapide` / `confirmationVisite`) pilotee par `AccueilScreen.tsx`.
+  Anti-double-scan et retour automatique lisent leur delai dans `parametres`
+  (`services/parametresService.ts`, valeurs par defaut posees au premier lancement).
+  Motifs par defaut poses de la meme facon (`services/motifsService.ts`) —
+  necessaire car `npm run seed` est un script de dev, pas le premier lancement reel.
+  Nettoyage de la saisie douchette dans `services/scanUtils.ts`.
 
 ## Donnees et confidentialite
 
@@ -96,5 +104,7 @@ code du process main.**
 ## Etat d'avancement
 
 Voir le plan approuve dans la conversation Claude Code pour le detail des 7 phases.
-Phase 1 (initialisation) et phase 2 (import Syracuse) terminees. Phase 3 (ecran
-d'accueil) a venir.
+Phases 1 (initialisation), 2 (import Syracuse) et 3 (ecran d'accueil) terminees.
+Phase 4 (parametres + code PIN) a venir. La barre de navigation actuelle
+(Accueil / Import Syracuse / Lignes a corriger) est provisoire : Import et Lignes
+a corriger doivent passer derriere le code PIN de la phase 4.

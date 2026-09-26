@@ -15,6 +15,16 @@ const api: ApiRenderer = {
     listerLignesACorriger: () => ipcRenderer.invoke(IPC.importListerLignesACorriger),
     corrigerLigne: (payload) => ipcRenderer.invoke(IPC.importCorrigerLigne, payload),
     ignorerLigne: (id) => ipcRenderer.invoke(IPC.importIgnorerLigne, id)
+  },
+  accueil: {
+    listerMotifs: () => ipcRenderer.invoke(IPC.accueilListerMotifs),
+    rechercherNumero: (numero) => ipcRenderer.invoke(IPC.accueilRechercherNumero, numero),
+    inscrireRapide: (payload) => ipcRenderer.invoke(IPC.accueilInscrireRapide, payload),
+    completerSexe: (payload) => ipcRenderer.invoke(IPC.accueilCompleterSexe, payload),
+    enregistrerVisite: (payload) => ipcRenderer.invoke(IPC.accueilEnregistrerVisite, payload),
+    compteurAujourdhui: () => ipcRenderer.invoke(IPC.accueilCompteurAujourdhui),
+    rechercherParNom: (requete) => ipcRenderer.invoke(IPC.accueilRechercherParNom, requete),
+    obtenirParametres: () => ipcRenderer.invoke(IPC.accueilObtenirParametres)
   }
 }
 
