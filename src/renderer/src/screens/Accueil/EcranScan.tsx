@@ -76,11 +76,6 @@ export function EcranScan({
 
   return (
     <div className="animate-in fade-in relative flex min-h-full flex-col items-center justify-center gap-8 p-8 duration-300">
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{ background: 'radial-gradient(55% 45% at 50% 32%, rgba(37,99,235,0.07), transparent 70%)' }}
-      />
-
       <div className="absolute right-6 top-6 flex items-start gap-4">
         <div className="rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
           Visites aujourd&apos;hui : <span className="font-semibold text-primary">{compteurAujourdhui}</span>

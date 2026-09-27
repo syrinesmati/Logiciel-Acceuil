@@ -23,6 +23,10 @@ export function enregistrerIpcStats(db: AppDb): void {
     const buffer = await construireClasseurStatistiques(tableau, periode, nomBibliotheque)
 
     const fenetre = BrowserWindow.fromWebContents(event.sender)!
+    // La boite de dialogue peut sinon s'ouvrir derriere la fenetre principale
+    // (perceptible comme "le bouton ne fait rien") si celle-ci n'est plus au
+    // premier plan au moment de l'appel.
+    fenetre.focus()
     const resultat = await dialog.showSaveDialog(fenetre, {
       title: 'Exporter les statistiques en Excel',
       defaultPath: nommerFichierStatistiques(filtre, periode, 'xlsx'),
@@ -40,6 +44,9 @@ export function enregistrerIpcStats(db: AppDb): void {
     const buffer = await genererPdfRapport(filtre)
 
     const fenetre = BrowserWindow.fromWebContents(event.sender)!
+    // Idem : la generation du PDF prend un instant, la fenetre principale a pu
+    // perdre le focus entre-temps.
+    fenetre.focus()
     const resultat = await dialog.showSaveDialog(fenetre, {
       title: 'Exporter le rapport en PDF',
       defaultPath: nommerFichierStatistiques(filtre, periode, 'pdf'),

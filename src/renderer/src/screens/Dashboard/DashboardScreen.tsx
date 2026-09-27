@@ -60,16 +60,23 @@ function DashboardContenu(): JSX.Element {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled={!tableau || !!exportEnCours} onClick={() => void handleExporter('excel')}>
               <FileSpreadsheet className="h-4 w-4" />
-              {exportEnCours === 'excel' ? 'Export…' : 'Exporter en Excel'}
+              {exportEnCours === 'excel' ? 'Choisissez un emplacement…' : 'Exporter en Excel'}
             </Button>
             <Button variant="outline" size="sm" disabled={!tableau || !!exportEnCours} onClick={() => void handleExporter('pdf')}>
               <FileText className="h-4 w-4" />
-              {exportEnCours === 'pdf' ? 'Export…' : 'Exporter en PDF'}
+              {exportEnCours === 'pdf' ? 'Generation du PDF…' : 'Exporter en PDF'}
             </Button>
           </div>
         </div>
         <FiltrePeriodeControle filtre={filtre} onChanger={setFiltre} />
-        {messageExport && <p className="text-sm text-muted-foreground">{messageExport}</p>}
+        {exportEnCours && (
+          <p className="text-sm text-muted-foreground">
+            {exportEnCours === 'excel'
+              ? "Une fenetre d'enregistrement Windows s'est ouverte (verifiez qu'elle n'est pas cachee derriere l'application)."
+              : 'Preparation du rapport puis fenetre d’enregistrement Windows…'}
+          </p>
+        )}
+        {!exportEnCours && messageExport && <p className="text-sm text-muted-foreground">{messageExport}</p>}
       </div>
 
       {erreur && (

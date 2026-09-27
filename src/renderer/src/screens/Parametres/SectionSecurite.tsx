@@ -87,7 +87,7 @@ function SectionSauvegarde(): JSX.Element {
   }
 
   return (
-    <Card className="max-w-md">
+    <Card>
       <CardHeader>
         <CardTitle>Sauvegarde de la base de donnees</CardTitle>
       </CardHeader>
@@ -172,8 +172,8 @@ export function SectionSecurite(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <Card className="max-w-md">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <Card>
         <CardHeader>
           <CardTitle>Changer le code PIN</CardTitle>
         </CardHeader>
