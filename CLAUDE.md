@@ -87,6 +87,20 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   apres un `requestAnimationFrame` + delai pour laisser Recharts terminer sa
   passe de mesure) avant que le main appelle `webContents.printToPDF`. Pas de
   second point d'entree Vite : plus simple a maintenir qu'une config MPA.
+- **Packaging** (`electron-builder.yml`, `build/icon.png`) : cible NSIS
+  (`npm run build:win`). Deux points delicats propres a ce projet :
+  - `better-sqlite3` est un module natif (N-API) : son `.node` ne peut pas se
+    charger depuis l'interieur d'un `.asar`, d'ou `asarUnpack:
+    node_modules/better-sqlite3/**`. Verifie apres chaque build que
+    `release/win-unpacked/resources/app.asar.unpacked/node_modules/better-sqlite3/`
+    contient bien `prebuilds/` (sinon l'app crashe au demarrage sur la machine
+    cible, erreur silencieuse en dehors de `dev`).
+  - Les migrations Drizzle (`src/main/db/migrations/*.sql`) ne sont pas dans le
+    bundle JS : `extraResources` les copie vers `resources/migrations/`, lu par
+    `main/index.ts` via `process.resourcesPath` quand `app.isPackaged`.
+  - `npmRebuild: false` : le binaire N-API precompile suffit, aucune
+    recompilation native (node-gyp/Python) requise ni souhaitee sur la machine
+    de build.
 
 ## Donnees et confidentialite
 
@@ -135,9 +149,8 @@ code du process main.**
 ## Etat d'avancement
 
 Voir le plan approuve dans la conversation Claude Code pour le detail des 7 phases.
-Phases 1 a 6 terminees (initialisation, import Syracuse, ecran d'accueil,
-parametres + code PIN, tableau de bord, export Excel/PDF). Phase 7 (packaging
-Windows) a venir. Navigation : Accueil (libre) / Tableau de bord (protege par
-PIN, avec boutons d'export Excel/PDF) / Parametres (protege par PIN,
-sous-onglets General, Motifs, Import Syracuse, Lignes a corriger, Historique,
-Securite).
+Les 7 phases sont terminees (initialisation, import Syracuse, ecran d'accueil,
+parametres + code PIN, tableau de bord, export Excel/PDF, packaging Windows).
+Navigation : Accueil (libre) / Tableau de bord (protege par PIN, avec boutons
+d'export Excel/PDF) / Parametres (protege par PIN, sous-onglets General,
+Motifs, Import Syracuse, Lignes a corriger, Historique, Securite).

@@ -133,7 +133,20 @@ npm test
 npm run build:win
 ```
 
-Genere un installeur NSIS dans `release/`.
+Genere un installeur NSIS dans `release/` :
+`release/bibliotheque-accueil-<version>-setup.exe`. C'est un installeur classique
+(`oneClick: false`, choix du dossier d'installation, raccourci bureau) — aucun
+compte administrateur ni composant externe requis. `better-sqlite3` (module
+natif) est extrait tel quel de l'archive `.asar` et les migrations SQL sont
+copiees a part ; aucune recompilation native n'a lieu au moment du build ni de
+l'installation.
+
+**Test d'installation sur poste "propre"** (recommande avant toute mise en
+service) : copier `release/*-setup.exe` sur une machine Windows sans Node ni
+outils de developpement, l'installer, lancer l'app, verifier qu'elle demarre
+hors ligne (pas de connexion reseau necessaire), scanner un numero, consulter
+le tableau de bord et exporter un Excel/PDF. La base de donnees se cree au
+premier lancement dans `%APPDATA%\bibliotheque-accueil\`.
 
 ## Structure du projet
 

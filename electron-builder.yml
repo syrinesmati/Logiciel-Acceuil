@@ -9,11 +9,16 @@ files:
   - "!electron.vite.config.{js,ts,mjs,cjs}"
   - "!{.eslintignore,.eslintrc.cjs,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md,fixtures}"
   - "!{.env,.env.*,.npmrc,pnpm-lock.yaml}"
+# better-sqlite3 est un module natif (N-API) : son binaire .node ne peut pas
+# etre charge depuis l'interieur d'un asar, il faut l'extraire tel quel.
 asarUnpack:
-  - resources/**
+  - node_modules/better-sqlite3/**
 extraResources:
   - from: src/main/db/migrations
     to: migrations
+# Binaire N-API precompile (voir README > Prerequis) : jamais de recompilation
+# native au moment du packaging (pas de node-gyp/Python sur la machine de build).
+npmRebuild: false
 win:
   executableName: accueil-mediatheque
   target:
