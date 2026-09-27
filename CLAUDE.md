@@ -57,6 +57,14 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   Motifs par defaut poses de la meme facon (`services/motifsService.ts`) —
   necessaire car `npm run seed` est un script de dev, pas le premier lancement reel.
   Nettoyage de la saisie douchette dans `services/scanUtils.ts`.
+- **Visiteur non-abonne** (bouton "Visiteur non-abonne (F3)" sur l'ecran de scan,
+  `SaisieCinDialog.tsx` + `FormulaireNonAbonne.tsx`) : un visiteur sans carte de la
+  mediatheque peut tout de meme etre enregistre, identifie par sa CIN plutot qu'un
+  numero d'abonne Syracuse. Reutilise entierement la table `abonnes` (fiche legere,
+  `source = 'non_abonne'`, `creerAbonneLeger` factorisee avec l'inscription rapide
+  dans `accueilService.ts`) : si la meme CIN revient, sa fiche est retrouvee
+  directement comme un abonne normal (meme anti-double-scan). Jamais rapprochee
+  d'un import Syracuse (contrairement a `inscription_rapide`), pas de telephone.
 - **Parametres** (`services/pinService.ts`, `parametresService.ts`, `motifsService.ts`
   + `renderer/src/screens/Parametres/`) : zone protegee par un code PIN (scrypt +
   sel, jamais stocke en clair, jamais verifie a nouveau une fois la zone quittee —
@@ -71,7 +79,9 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   une requete SQL les visites *de la periode filtree uniquement* (jamais toutes les
   visites) avec juste ce qu'il faut (abonne, motifs) ; tout le calcul (indicateurs,
   evolution, repartitions, croisement motif x age, heatmap, top 10) est ensuite fait
-  par des fonctions JS pures dans `statsCalculs.ts`, testables sans DB. Choix
+  par des fonctions JS pures dans `statsCalculs.ts`, testables sans DB. Inclut une
+  repartition abonnes / visiteurs non-abonnes (`parTypeVisiteur`,
+  `calculerRepartitionParTypeVisiteur`), sur le meme modele que `parSexe`. Choix
   deliberement different d'agregations SQL pures : l'age a la date de la visite et
   les bornes de jour locales sont plus surs a calculer avec `calculerAge`/Date locale
   qu'avec les fonctions de date de SQLite sur des timestamps UTC. Le renderer ne

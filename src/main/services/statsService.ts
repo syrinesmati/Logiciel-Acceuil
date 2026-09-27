@@ -11,6 +11,7 @@ import {
   calculerRepartitionParMotif,
   calculerRepartitionParSexe,
   calculerRepartitionParTrancheAge,
+  calculerRepartitionParTypeVisiteur,
   calculerTopAbonnes,
   choisirGranularite
 } from './statsCalculs'
@@ -35,6 +36,7 @@ export function obtenirTableauDeBord(
     parMotif: calculerRepartitionParMotif(visitesActuelles),
     parTrancheAge: calculerRepartitionParTrancheAge(visitesActuelles, tranchesAge),
     parSexe: calculerRepartitionParSexe(visitesActuelles),
+    parTypeVisiteur: calculerRepartitionParTypeVisiteur(visitesActuelles),
     motifParTrancheAge: calculerMotifParTrancheAge(visitesActuelles, tranchesAge),
     heuresAffluence: calculerHeuresAffluence(visitesActuelles),
     topAbonnes: calculerTopAbonnes(visitesActuelles, 10)

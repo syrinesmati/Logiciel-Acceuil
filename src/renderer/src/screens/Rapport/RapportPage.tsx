@@ -6,6 +6,7 @@ import { GraphiqueEvolution } from '@renderer/screens/Dashboard/GraphiqueEvoluti
 import { GraphiqueParMotif } from '@renderer/screens/Dashboard/GraphiqueParMotif'
 import { GraphiqueParTrancheAge } from '@renderer/screens/Dashboard/GraphiqueParTrancheAge'
 import { GraphiqueParSexe } from '@renderer/screens/Dashboard/GraphiqueParSexe'
+import { GraphiqueParTypeVisiteur } from '@renderer/screens/Dashboard/GraphiqueParTypeVisiteur'
 import { GraphiqueMotifParTrancheAge } from '@renderer/screens/Dashboard/GraphiqueMotifParTrancheAge'
 import { CarteChaleurAffluence } from '@renderer/screens/Dashboard/CarteChaleurAffluence'
 import { TableTopAbonnes } from '@renderer/screens/Dashboard/TableTopAbonnes'
@@ -95,6 +96,7 @@ export function RapportPage(): JSX.Element {
         <GraphiqueParMotif donnees={tableau.parMotif} />
         <GraphiqueParTrancheAge donnees={tableau.parTrancheAge} />
         <GraphiqueParSexe donnees={tableau.parSexe} />
+        <GraphiqueParTypeVisiteur donnees={tableau.parTypeVisiteur} />
         <GraphiqueMotifParTrancheAge donnees={tableau.motifParTrancheAge} />
       </div>
 

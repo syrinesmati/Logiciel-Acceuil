@@ -3,6 +3,7 @@ import { IPC } from '@shared/ipc'
 import {
   completerSexeSchema,
   enregistrerVisiteSchema,
+  inscriptionNonAbonneSchema,
   inscriptionRapideSchema,
   rechercherNumeroSchema,
   rechercherParNomSchema
@@ -15,6 +16,7 @@ import {
   compterVisitesAujourdhui,
   enregistrerVisite,
   inscrireAbonneRapide,
+  inscrireNonAbonne,
   rechercherAbonnePourVisite,
   rechercherAbonnesParNom
 } from '../services/accueilService'
@@ -31,6 +33,11 @@ export function enregistrerIpcAccueil(db: AppDb): void {
   ipcMain.handle(IPC.accueilInscrireRapide, (_event, payloadBrut) => {
     const payload = inscriptionRapideSchema.parse(payloadBrut)
     return inscrireAbonneRapide(payload, db)
+  })
+
+  ipcMain.handle(IPC.accueilInscrireNonAbonne, (_event, payloadBrut) => {
+    const payload = inscriptionNonAbonneSchema.parse(payloadBrut)
+    return inscrireNonAbonne(payload, db)
   })
 
   ipcMain.handle(IPC.accueilCompleterSexe, (_event, payloadBrut) => {

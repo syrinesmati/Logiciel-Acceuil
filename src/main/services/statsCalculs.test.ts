@@ -9,6 +9,7 @@ import {
   calculerRepartitionParMotif,
   calculerRepartitionParSexe,
   calculerRepartitionParTrancheAge,
+  calculerRepartitionParTypeVisiteur,
   calculerTopAbonnes,
   choisirGranularite,
   type VisiteEnrichie
@@ -24,6 +25,7 @@ function visite(partiel: Partial<VisiteEnrichie> & { visiteId: number; dateHeure
     nomComplet: `Abonne ${partiel.visiteId}`,
     dateNaissance: null,
     sexe: null,
+    source: 'import',
     motifs: [PRET],
     ...partiel
   }
@@ -133,6 +135,19 @@ describe('calculerRepartitionParSexe', () => {
     expect(repartition.find((r) => r.sexe === 'H')!.nombre).toBe(2)
     expect(repartition.find((r) => r.sexe === 'F')!.nombre).toBe(1)
     expect(repartition.find((r) => r.sexe === 'non_renseigne')!.nombre).toBe(1)
+  })
+})
+
+describe('calculerRepartitionParTypeVisiteur', () => {
+  it('distingue les visites abonne (import/inscription rapide) des visites non-abonne (CIN)', () => {
+    const visites = [
+      visite({ visiteId: 1, dateHeure: 'x', source: 'import' }),
+      visite({ visiteId: 2, dateHeure: 'x', source: 'inscription_rapide' }),
+      visite({ visiteId: 3, dateHeure: 'x', source: 'non_abonne' })
+    ]
+    const repartition = calculerRepartitionParTypeVisiteur(visites)
+    expect(repartition.find((r) => r.type === 'abonne')!.nombre).toBe(2)
+    expect(repartition.find((r) => r.type === 'non_abonne')!.nombre).toBe(1)
   })
 })
 

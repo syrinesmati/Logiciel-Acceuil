@@ -26,7 +26,8 @@ export function chargerVisitesPeriode(periode: PeriodeResolue, db: AppDb): Visit
       numeroAbonne: abonnes.numeroAbonne,
       nomComplet: abonnes.nomComplet,
       dateNaissance: abonnes.dateNaissance,
-      sexe: abonnes.sexe
+      sexe: abonnes.sexe,
+      source: abonnes.source
     })
     .from(visites)
     .innerJoin(abonnes, eq(abonnes.id, visites.abonneId))

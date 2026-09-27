@@ -53,6 +53,13 @@ export const inscriptionRapideSchema = z.object({
   telephone: z.string().nullable()
 })
 
+export const inscriptionNonAbonneSchema = z.object({
+  cin: z.string().min(1, 'Le numero de CIN est obligatoire'),
+  nomComplet: z.string().min(1, 'Le nom est obligatoire'),
+  dateNaissance: z.string().nullable(),
+  sexe: z.enum(['H', 'F']).nullable()
+})
+
 export const completerSexeSchema = z.object({
   abonneId: z.number(),
   sexe: z.enum(['H', 'F'])

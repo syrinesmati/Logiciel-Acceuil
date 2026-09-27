@@ -10,6 +10,7 @@ import {
   completerSexe,
   enregistrerVisite,
   inscrireAbonneRapide,
+  inscrireNonAbonne,
   rechercherAbonnePourVisite,
   rechercherAbonnesParNom
 } from './accueilService'
@@ -121,6 +122,36 @@ describe('inscrireAbonneRapide', () => {
       AUJOURDHUI
     )
     expect(r.succes).toBe(false)
+  })
+})
+
+describe('inscrireNonAbonne', () => {
+  it('cree un abonne leger avec source non_abonne, sans telephone', () => {
+    const r = inscrireNonAbonne(
+      { cin: '40001', nomComplet: 'Zied Chaabane', dateNaissance: '1995-03-10', sexe: 'H' },
+      db,
+      AUJOURDHUI
+    )
+    expect(r.succes).toBe(true)
+    if (r.succes) {
+      expect(r.abonne.source).toBe('non_abonne')
+      expect(r.abonne.numeroAbonne).toBe('40001')
+      expect(r.abonne.telephone).toBeNull()
+      expect(r.abonne.age).toBe(31)
+    }
+  })
+
+  it('refuse une CIN deja utilisee par un abonne existant', () => {
+    creerAbonneDeTest('40002', 'Quelqu\'un')
+    const r = inscrireNonAbonne({ cin: '40002', nomComplet: 'Un autre', dateNaissance: null, sexe: null }, db, AUJOURDHUI)
+    expect(r.succes).toBe(false)
+  })
+
+  it('retrouve la meme fiche si la meme CIN revient (via rechercherAbonnePourVisite)', () => {
+    inscrireNonAbonne({ cin: '40003', nomComplet: 'Amine', dateNaissance: null, sexe: null }, db, AUJOURDHUI)
+    const r = rechercherAbonnePourVisite('40003', db, 300, AUJOURDHUI)
+    expect(r.trouve).toBe(true)
+    expect(r.abonne?.source).toBe('non_abonne')
   })
 })
 

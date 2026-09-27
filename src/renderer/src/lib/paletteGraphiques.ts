@@ -23,6 +23,11 @@ export const COULEUR_SEXE: Record<'H' | 'F' | 'non_renseigne', string> = {
   non_renseigne: COULEUR_MUTEE
 }
 
+export const COULEUR_TYPE_VISITEUR: Record<'abonne' | 'non_abonne', string> = {
+  abonne: PALETTE_CATEGORIELLE[0],
+  non_abonne: PALETTE_CATEGORIELLE[2]
+}
+
 export function couleurCategorielle(index: number): string {
   return PALETTE_CATEGORIELLE[index % PALETTE_CATEGORIELLE.length]!
 }

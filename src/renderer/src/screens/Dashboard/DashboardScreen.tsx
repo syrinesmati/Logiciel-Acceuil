@@ -9,6 +9,7 @@ import { GraphiqueEvolution } from './GraphiqueEvolution'
 import { GraphiqueParMotif } from './GraphiqueParMotif'
 import { GraphiqueParTrancheAge } from './GraphiqueParTrancheAge'
 import { GraphiqueParSexe } from './GraphiqueParSexe'
+import { GraphiqueParTypeVisiteur } from './GraphiqueParTypeVisiteur'
 import { GraphiqueMotifParTrancheAge } from './GraphiqueMotifParTrancheAge'
 import { CarteChaleurAffluence } from './CarteChaleurAffluence'
 import { TableTopAbonnes } from './TableTopAbonnes'
@@ -104,6 +105,7 @@ function DashboardContenu(): JSX.Element {
             <GraphiqueParMotif donnees={tableau.parMotif} />
             <GraphiqueParTrancheAge donnees={tableau.parTrancheAge} />
             <GraphiqueParSexe donnees={tableau.parSexe} />
+            <GraphiqueParTypeVisiteur donnees={tableau.parTypeVisiteur} />
             <GraphiqueMotifParTrancheAge donnees={tableau.motifParTrancheAge} />
           </div>
 

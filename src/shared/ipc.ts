@@ -9,6 +9,7 @@ import type {
 import type {
   AbonnePourFiche,
   EnregistrerVisitePayload,
+  InscriptionNonAbonnePayload,
   InscriptionRapidePayload,
   Motif,
   ParametresAccueil,
@@ -32,6 +33,7 @@ export const IPC = {
   accueilListerMotifs: 'accueil:lister-motifs',
   accueilRechercherNumero: 'accueil:rechercher-numero',
   accueilInscrireRapide: 'accueil:inscrire-rapide',
+  accueilInscrireNonAbonne: 'accueil:inscrire-non-abonne',
   accueilCompleterSexe: 'accueil:completer-sexe',
   accueilEnregistrerVisite: 'accueil:enregistrer-visite',
   accueilCompteurAujourdhui: 'accueil:compteur-aujourdhui',
@@ -86,6 +88,7 @@ export interface ApiRenderer {
     listerMotifs: () => Promise<Motif[]>
     rechercherNumero: (numero: string) => Promise<ResultatRecherche>
     inscrireRapide: (payload: InscriptionRapidePayload) => Promise<ResultatInscription>
+    inscrireNonAbonne: (payload: InscriptionNonAbonnePayload) => Promise<ResultatInscription>
     completerSexe: (payload: { abonneId: number; sexe: 'H' | 'F' }) => Promise<AbonnePourFiche>
     enregistrerVisite: (payload: EnregistrerVisitePayload) => Promise<{ compteurAujourdhui: number }>
     compteurAujourdhui: () => Promise<number>

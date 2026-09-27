@@ -20,6 +20,7 @@ const api: ApiRenderer = {
     listerMotifs: () => ipcRenderer.invoke(IPC.accueilListerMotifs),
     rechercherNumero: (numero) => ipcRenderer.invoke(IPC.accueilRechercherNumero, numero),
     inscrireRapide: (payload) => ipcRenderer.invoke(IPC.accueilInscrireRapide, payload),
+    inscrireNonAbonne: (payload) => ipcRenderer.invoke(IPC.accueilInscrireNonAbonne, payload),
     completerSexe: (payload) => ipcRenderer.invoke(IPC.accueilCompleterSexe, payload),
     enregistrerVisite: (payload) => ipcRenderer.invoke(IPC.accueilEnregistrerVisite, payload),
     compteurAujourdhui: () => ipcRenderer.invoke(IPC.accueilCompteurAujourdhui),

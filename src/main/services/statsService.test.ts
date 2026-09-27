@@ -31,7 +31,13 @@ function creerMotif(libelle: string): number {
   return db.insert(motifs).values({ libelle, icone: 'book-up', couleur: '#2563eb', ordre: 1 }).returning({ id: motifs.id }).get().id
 }
 
-function creerAbonne(numero: string, nom: string, dateNaissance: string | null, sexe: 'H' | 'F' | null = null): number {
+function creerAbonne(
+  numero: string,
+  nom: string,
+  dateNaissance: string | null,
+  sexe: 'H' | 'F' | null = null,
+  source: 'import' | 'inscription_rapide' | 'non_abonne' = 'import'
+): number {
   const maintenant = new Date().toISOString()
   return db
     .insert(abonnes)
@@ -41,7 +47,7 @@ function creerAbonne(numero: string, nom: string, dateNaissance: string | null, 
       nomNormalise: nom.toLowerCase(),
       dateNaissance,
       sexe,
-      source: 'import',
+      source,
       datePremierImport: maintenant,
       dateDerniereMaj: maintenant
     })
@@ -110,5 +116,17 @@ describe('obtenirTableauDeBord', () => {
     const nonRenseigne = tableau.parSexe.find((s) => s.sexe === 'non_renseigne')!
     expect(nonRenseigne.nombre).toBe(1)
     expect(nonRenseigne.pourcentage).toBe(100)
+  })
+
+  it('distingue les visites de visiteurs non-abonnes (CIN) dans parTypeVisiteur', () => {
+    const motifId = creerMotif('Pret')
+    const abonneId = creerAbonne('50001', 'Abonne normal', null)
+    const nonAbonneId = creerAbonne('50002', 'Visiteur CIN', null, null, 'non_abonne')
+    creerVisite(abonneId, '2026-09-22T10:00:00.000Z', [motifId])
+    creerVisite(nonAbonneId, '2026-09-23T10:00:00.000Z', [motifId])
+
+    const tableau = obtenirTableauDeBord({ type: 'semaine' }, db, REFERENCE)
+    expect(tableau.parTypeVisiteur.find((t) => t.type === 'abonne')!.nombre).toBe(1)
+    expect(tableau.parTypeVisiteur.find((t) => t.type === 'non_abonne')!.nombre).toBe(1)
   })
 })

@@ -6,7 +6,7 @@ export interface Abonne {
   sexe: 'H' | 'F' | null
   telephone: string | null
   email: string | null
-  source: 'import' | 'inscription_rapide'
+  source: 'import' | 'inscription_rapide' | 'non_abonne'
   actif: boolean
 }
 

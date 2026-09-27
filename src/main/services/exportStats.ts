@@ -121,6 +121,18 @@ export async function construireClasseurStatistiques(
   parSexe.addRows(tableau.parSexe.map((s) => ({ libelle: LIBELLES_SEXE[s.sexe], nombre: s.nombre, pourcentage: s.pourcentage })))
   parSexe.getRow(1).font = enTete.font
 
+  const parTypeVisiteur = classeur.addWorksheet('Type de visiteur')
+  const LIBELLES_TYPE_VISITEUR: Record<string, string> = { abonne: 'Abonne', non_abonne: 'Non-abonne (CIN)' }
+  parTypeVisiteur.columns = [
+    { header: 'Type', key: 'libelle', width: 20 },
+    { header: 'Nombre', key: 'nombre', width: 14 },
+    { header: 'Pourcentage', key: 'pourcentage', width: 14 }
+  ]
+  parTypeVisiteur.addRows(
+    tableau.parTypeVisiteur.map((t) => ({ libelle: LIBELLES_TYPE_VISITEUR[t.type], nombre: t.nombre, pourcentage: t.pourcentage }))
+  )
+  parTypeVisiteur.getRow(1).font = enTete.font
+
   const motifParAge = classeur.addWorksheet('Motif x tranche age')
   const { colonnes, lignes } = pivoterMotifParTrancheAge(tableau)
   motifParAge.columns = colonnes.map((libelle, i) => ({ header: libelle, key: `c${i}`, width: i === 0 ? 20 : 16 }))

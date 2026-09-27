@@ -12,7 +12,7 @@ export const abonnes = sqliteTable(
     sexe: text('sexe', { enum: ['H', 'F'] }),
     telephone: text('telephone'),
     email: text('email'),
-    source: text('source', { enum: ['import', 'inscription_rapide'] })
+    source: text('source', { enum: ['import', 'inscription_rapide', 'non_abonne'] })
       .notNull()
       .default('inscription_rapide'),
     datePremierImport: text('date_premier_import')

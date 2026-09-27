@@ -48,6 +48,10 @@ function tableauDeTest(): TableauDeBord {
       { sexe: 'F', nombre: 3, pourcentage: 30 },
       { sexe: 'non_renseigne', nombre: 1, pourcentage: 10 }
     ],
+    parTypeVisiteur: [
+      { type: 'abonne', nombre: 9, pourcentage: 90 },
+      { type: 'non_abonne', nombre: 1, pourcentage: 10 }
+    ],
     motifParTrancheAge: [
       { trancheId: '0-12', trancheLibelle: '0-12 ans', parMotif: [{ motifId: 1, libelle: 'Pret', couleur: '#2563eb', nombre: 4 }] }
     ],
@@ -69,6 +73,7 @@ describe('construireClasseurStatistiques', () => {
       'Par motif',
       'Par tranche age',
       'Par sexe',
+      'Type de visiteur',
       'Motif x tranche age',
       'Heures affluence',
       'Top 10 abonnes'

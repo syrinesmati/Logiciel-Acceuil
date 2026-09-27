@@ -9,7 +9,9 @@ import type {
   RepartitionMotif,
   RepartitionSexe,
   RepartitionTrancheAge,
-  Sexe
+  RepartitionTypeVisiteur,
+  Sexe,
+  TypeVisiteur
 } from '@shared/stats'
 import type { TrancheAge } from '@shared/parametres'
 import { calculerAge, trouverTrancheAge, TRANCHE_AGE_INCONNU } from './age'
@@ -31,6 +33,7 @@ export interface VisiteEnrichie {
   nomComplet: string
   dateNaissance: string | null
   sexe: 'H' | 'F' | null
+  source: 'import' | 'inscription_rapide' | 'non_abonne'
   motifs: MotifDeVisite[]
 }
 
@@ -190,6 +193,21 @@ export function calculerRepartitionParSexe(visites: VisiteEnrichie[]): Repartiti
     sexe,
     nombre: compteurs[sexe],
     pourcentage: total > 0 ? Math.round((compteurs[sexe] / total) * 1000) / 10 : 0
+  }))
+}
+
+/** Distingue les visites d'abonnes (import/inscription rapide) de celles de visiteurs non-abonnes (CIN). */
+export function calculerRepartitionParTypeVisiteur(visites: VisiteEnrichie[]): RepartitionTypeVisiteur[] {
+  const compteurs: Record<TypeVisiteur, number> = { abonne: 0, non_abonne: 0 }
+  for (const visite of visites) {
+    const cle: TypeVisiteur = visite.source === 'non_abonne' ? 'non_abonne' : 'abonne'
+    compteurs[cle]++
+  }
+  const total = visites.length
+  return (['abonne', 'non_abonne'] as TypeVisiteur[]).map((type) => ({
+    type,
+    nombre: compteurs[type],
+    pourcentage: total > 0 ? Math.round((compteurs[type] / total) * 1000) / 10 : 0
   }))
 }
 

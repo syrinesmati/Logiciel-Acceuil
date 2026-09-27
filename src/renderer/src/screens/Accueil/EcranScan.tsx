@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type JSX } from 'react'
-import { ScanLine, Search } from 'lucide-react'
+import { IdCard, ScanLine, Search } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 
 interface Props {
@@ -7,9 +7,16 @@ interface Props {
   chargement: boolean
   onScanner: (numero: string) => void
   onOuvrirRecherche: () => void
+  onOuvrirCin: () => void
 }
 
-export function EcranScan({ compteurAujourdhui, chargement, onScanner, onOuvrirRecherche }: Props): JSX.Element {
+export function EcranScan({
+  compteurAujourdhui,
+  chargement,
+  onScanner,
+  onOuvrirRecherche,
+  onOuvrirCin
+}: Props): JSX.Element {
   const [valeur, setValeur] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -29,11 +36,14 @@ export function EcranScan({ compteurAujourdhui, chargement, onScanner, onOuvrirR
       if (e.key === 'F2') {
         e.preventDefault()
         onOuvrirRecherche()
+      } else if (e.key === 'F3') {
+        e.preventDefault()
+        onOuvrirCin()
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onOuvrirRecherche])
+  }, [onOuvrirRecherche, onOuvrirCin])
 
   function handleSubmit(e: FormEvent): void {
     e.preventDefault()
@@ -71,10 +81,16 @@ export function EcranScan({ compteurAujourdhui, chargement, onScanner, onOuvrirR
         />
       </form>
 
-      <Button variant="ghost" size="lg" onClick={onOuvrirRecherche}>
-        <Search className="h-5 w-5" />
-        Rechercher par nom (F2)
-      </Button>
+      <div className="flex gap-2">
+        <Button variant="ghost" size="lg" onClick={onOuvrirRecherche}>
+          <Search className="h-5 w-5" />
+          Rechercher par nom (F2)
+        </Button>
+        <Button variant="ghost" size="lg" onClick={onOuvrirCin}>
+          <IdCard className="h-5 w-5" />
+          Visiteur non-abonné (F3)
+        </Button>
+      </div>
     </div>
   )
 }

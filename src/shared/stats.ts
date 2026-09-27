@@ -45,6 +45,14 @@ export interface RepartitionSexe {
   pourcentage: number
 }
 
+export type TypeVisiteur = 'abonne' | 'non_abonne'
+
+export interface RepartitionTypeVisiteur {
+  type: TypeVisiteur
+  nombre: number
+  pourcentage: number
+}
+
 export interface MotifParTrancheAge {
   trancheId: string
   trancheLibelle: string
@@ -72,6 +80,7 @@ export interface TableauDeBord {
   parMotif: RepartitionMotif[]
   parTrancheAge: RepartitionTrancheAge[]
   parSexe: RepartitionSexe[]
+  parTypeVisiteur: RepartitionTypeVisiteur[]
   motifParTrancheAge: MotifParTrancheAge[]
   heuresAffluence: CelluleAffluence[]
   topAbonnes: AbonneAssidu[]

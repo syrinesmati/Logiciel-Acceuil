@@ -52,7 +52,9 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8 p-8">
       <div className="rounded-xl border border-border bg-card p-8 text-center shadow-sm">
-        <p className="text-sm text-muted-foreground">Abonné n° {abonne.numeroAbonne}</p>
+        <p className="text-sm text-muted-foreground">
+          {abonne.source === 'non_abonne' ? `Visiteur non-abonné · CIN ${abonne.numeroAbonne}` : `Abonné n° ${abonne.numeroAbonne}`}
+        </p>
         <p dir="auto" className="mt-1 text-4xl font-bold">
           {abonne.nomComplet}
         </p>
