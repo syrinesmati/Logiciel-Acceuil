@@ -28,7 +28,7 @@ export function AvertissementDoubleScan({ abonne, derniereVisite, onAnnuler, onC
   }, [onAnnuler, onContinuer])
 
   return (
-    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 p-8 text-center">
+    <div className="animate-in fade-in zoom-in-95 mx-auto flex max-w-lg flex-col items-center gap-6 p-8 text-center duration-300">
       <AlertTriangle className="h-16 w-16 text-amber-500" />
       <div>
         <h1 className="text-2xl font-semibold">Déjà scanné récemment</h1>

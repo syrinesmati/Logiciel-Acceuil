@@ -1,4 +1,5 @@
 import { useEffect, useState, type JSX } from 'react'
+import { Check } from 'lucide-react'
 import type { AbonnePourFiche, Motif } from '@shared/accueil'
 import { Button } from '@renderer/components/ui/button'
 import { obtenirIcone } from '@renderer/lib/icones'
@@ -50,7 +51,7 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
   }, [motifs, motifsSelectionnes, chargement, onAnnuler, onValider])
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-8 p-8">
+    <div className="animate-in fade-in zoom-in-95 mx-auto flex max-w-3xl flex-col gap-8 p-8 duration-300">
       <div className="rounded-xl border border-border bg-card p-8 text-center shadow-sm">
         <p className="text-sm text-muted-foreground">
           {abonne.source === 'non_abonne' ? `Visiteur non-abonné · CIN ${abonne.numeroAbonne}` : `Abonné n° ${abonne.numeroAbonne}`}
@@ -76,7 +77,14 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
       </div>
 
       <div>
-        <h2 className="mb-3 text-lg font-semibold">Motif de la visite</h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Motif de la visite</h2>
+          {motifsSelectionnes.size > 0 && (
+            <span className="animate-in fade-in text-sm font-medium text-primary">
+              {motifsSelectionnes.size} sélectionné{motifsSelectionnes.size > 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {motifs.map((motif, index) => {
             const Icone = obtenirIcone(motif.icone)
@@ -87,11 +95,18 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
                 type="button"
                 onClick={() => basculerMotif(motif.id)}
                 className={cn(
-                  'flex flex-col items-center gap-2 rounded-xl border-2 p-6 text-lg font-medium shadow-sm transition-colors',
-                  selectionne ? 'border-transparent text-white' : 'border-border bg-card hover:bg-accent'
+                  'relative flex flex-col items-center gap-2 rounded-xl border-2 p-6 text-lg font-medium shadow-sm transition-all',
+                  selectionne
+                    ? 'scale-[1.03] border-transparent text-white shadow-md'
+                    : 'border-border bg-card hover:bg-accent'
                 )}
                 style={selectionne ? { backgroundColor: motif.couleur } : undefined}
               >
+                {selectionne && (
+                  <span className="animate-in zoom-in-50 absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow">
+                    <Check className="h-4 w-4" style={{ color: motif.couleur }} strokeWidth={3} />
+                  </span>
+                )}
                 <Icone className="h-8 w-8" style={selectionne ? undefined : { color: motif.couleur }} />
                 {motif.libelle}
                 <span className="text-xs opacity-70">({index + 1})</span>

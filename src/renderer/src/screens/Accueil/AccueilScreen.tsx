@@ -203,9 +203,11 @@ export function AccueilScreen(): JSX.Element {
       )}
 
       {etat.nom === 'confirmationVisite' && (
-        <div className="flex min-h-full flex-col items-center justify-center gap-4">
-          <CheckCircle2 className="h-24 w-24 text-emerald-500" />
-          <p className="text-2xl font-semibold">Visite enregistrée</p>
+        <div className="animate-in fade-in flex min-h-full flex-col items-center justify-center gap-4 duration-200">
+          <CheckCircle2 className="animate-in zoom-in-50 h-24 w-24 text-emerald-500 duration-300" />
+          <p className="animate-in fade-in slide-in-from-bottom-2 text-2xl font-semibold delay-150 duration-300">
+            Visite enregistrée
+          </p>
         </div>
       )}
 

@@ -1,6 +1,24 @@
 import { useEffect, useRef, useState, type FormEvent, type JSX } from 'react'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import { IdCard, ScanLine, Search } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
+
+function Horloge(): JSX.Element {
+  const [maintenant, setMaintenant] = useState(new Date())
+
+  useEffect(() => {
+    const identifiant = setInterval(() => setMaintenant(new Date()), 1000)
+    return () => clearInterval(identifiant)
+  }, [])
+
+  return (
+    <div className="text-right">
+      <p className="text-lg font-semibold tabular-nums">{format(maintenant, 'HH:mm')}</p>
+      <p className="text-xs capitalize text-muted-foreground">{format(maintenant, 'EEEE d MMMM', { locale: fr })}</p>
+    </div>
+  )
+}
 
 interface Props {
   compteurAujourdhui: number
@@ -57,12 +75,19 @@ export function EcranScan({
   }
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center gap-10 p-8">
-      <div className="absolute right-6 top-6 rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
-        Visites aujourd&apos;hui : <span className="font-semibold">{compteurAujourdhui}</span>
+    <div className="animate-in fade-in relative flex min-h-full flex-col items-center justify-center gap-10 p-8 duration-300">
+      <div className="absolute right-6 top-6 flex items-start gap-4">
+        <div className="rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
+          Visites aujourd&apos;hui : <span className="font-semibold text-primary">{compteurAujourdhui}</span>
+        </div>
+        <Horloge />
       </div>
 
-      <ScanLine className="h-20 w-20 text-muted-foreground" strokeWidth={1} />
+      <div className="relative flex h-36 w-36 items-center justify-center">
+        <span className="bg-primary/10 absolute inset-0 animate-pulse rounded-full" />
+        <span className="bg-primary/10 absolute inset-3 rounded-full" />
+        <ScanLine className="text-primary relative h-16 w-16" strokeWidth={1.5} />
+      </div>
 
       <div className="text-center">
         <h1 className="text-3xl font-semibold">Scannez la carte de l&apos;abonné</h1>
@@ -83,17 +108,17 @@ export function EcranScan({
           disabled={chargement}
           inputMode="numeric"
           placeholder="Numéro d'abonné…"
-          className="w-full rounded-xl border-2 border-input bg-background px-6 py-5 text-center text-3xl tracking-widest shadow-sm outline-none focus-visible:border-ring"
+          className="focus-visible:border-primary w-full rounded-xl border-2 border-input bg-background px-6 py-5 text-center text-3xl tracking-widest shadow-sm outline-none transition-colors"
         />
       </form>
 
       <div className="flex gap-2">
-        <Button variant="ghost" size="lg" onClick={onOuvrirRecherche}>
-          <Search className="h-5 w-5" />
+        <Button variant="ghost" size="sm" onClick={onOuvrirRecherche}>
+          <Search className="h-4 w-4" />
           Rechercher par nom (F2)
         </Button>
-        <Button variant="ghost" size="lg" onClick={onOuvrirCin}>
-          <IdCard className="h-5 w-5" />
+        <Button variant="ghost" size="sm" onClick={onOuvrirCin}>
+          <IdCard className="h-4 w-4" />
           Visiteur non-abonné (F3)
         </Button>
       </div>
