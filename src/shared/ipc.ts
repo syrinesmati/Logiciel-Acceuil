@@ -16,7 +16,7 @@ import type {
   ResultatInscription,
   ResultatRecherche
 } from './accueil'
-import type { MotifAdmin, ParametresGeneraux, ResultatChangementPin } from './parametres'
+import type { ApercuSauvegarde, MotifAdmin, ParametresGeneraux, ResultatChangementPin } from './parametres'
 import type { FiltrePeriode, TableauDeBord } from './stats'
 
 /** Noms de canaux IPC centralises pour eviter les fautes de frappe entre main/preload/renderer. */
@@ -44,6 +44,8 @@ export const IPC = {
   parametresVerifierPin: 'parametres:verifier-pin',
   parametresChangerPin: 'parametres:changer-pin',
   parametresSauvegarderMaintenant: 'parametres:sauvegarder-maintenant',
+  parametresChoisirFichierSauvegarde: 'parametres:choisir-fichier-sauvegarde',
+  parametresRestaurerSauvegarde: 'parametres:restaurer-sauvegarde',
   parametresObtenirGeneraux: 'parametres:obtenir-generaux',
   parametresEnregistrerGeneraux: 'parametres:enregistrer-generaux',
   parametresListerMotifs: 'parametres:lister-motifs',
@@ -102,6 +104,8 @@ export interface ApiRenderer {
     verifierPin: (pin: string) => Promise<boolean>
     changerPin: (payload: { ancienPin: string; nouveauPin: string }) => Promise<ResultatChangementPin>
     sauvegarderMaintenant: () => Promise<string | null>
+    choisirFichierSauvegarde: () => Promise<ApercuSauvegarde | null>
+    restaurerSauvegarde: (chemin: string) => Promise<void>
     obtenirGeneraux: () => Promise<ParametresGeneraux>
     enregistrerGeneraux: (payload: ParametresGeneraux) => Promise<void>
     listerMotifs: () => Promise<MotifAdmin[]>

@@ -6,7 +6,13 @@ import Database from 'better-sqlite3'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { getDb, closeDb, getSqliteInstance, type AppDb } from '../db/client'
 import { abonnes } from '../db/schema'
-import { effectuerSauvegardeAutomatiqueSiNecessaire, nommerFichierSauvegardeManuelle, sauvegarderVers } from './backupService'
+import {
+  analyserFichierSauvegarde,
+  effectuerSauvegardeAutomatiqueSiNecessaire,
+  nommerFichierSauvegardeManuelle,
+  restaurerDepuis,
+  sauvegarderVers
+} from './backupService'
 
 const migrationsFolder = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'db', 'migrations')
 
@@ -98,5 +104,58 @@ describe('effectuerSauvegardeAutomatiqueSiNecessaire', () => {
     // Les plus anciens sont purges en premier (ordre alphabetique = ordre chronologique ici).
     expect(fichiersRestants).not.toContain('accueil-2026-08-01.sqlite')
     expect(fichiersRestants).not.toContain('accueil-2026-08-02.sqlite')
+  })
+})
+
+describe('analyserFichierSauvegarde', () => {
+  it('reconnait une sauvegarde valide et compte ses lignes', async () => {
+    insererUnAbonne('40001')
+    insererUnAbonne('40002')
+    const cheminSauvegarde = path.join(dossierTest, 'copie.sqlite')
+    await sauvegarderVers(getSqliteInstance(), cheminSauvegarde)
+
+    const apercu = analyserFichierSauvegarde(cheminSauvegarde)
+
+    expect(apercu).toEqual({ valide: true, chemin: cheminSauvegarde, nbAbonnes: 2, nbVisites: 0 })
+  })
+
+  it("rejette un fichier qui n'est pas une sauvegarde de cette application", () => {
+    const cheminInvalide = path.join(dossierTest, 'pas-une-base.sqlite')
+    fs.writeFileSync(cheminInvalide, 'ceci nest pas du sqlite')
+
+    expect(analyserFichierSauvegarde(cheminInvalide)).toEqual({ valide: false })
+  })
+
+  it('rejette un chemin inexistant', () => {
+    expect(analyserFichierSauvegarde(path.join(dossierTest, 'absent.sqlite'))).toEqual({ valide: false })
+  })
+})
+
+describe('restaurerDepuis', () => {
+  it('remplace le fichier de la base actuelle par le contenu de la sauvegarde', async () => {
+    insererUnAbonne('50001')
+    const cheminSauvegarde = path.join(dossierTest, 'sauvegarde-a-restaurer.sqlite')
+    await sauvegarderVers(getSqliteInstance(), cheminSauvegarde)
+    closeDb()
+
+    restaurerDepuis(cheminSauvegarde, dbPath)
+
+    const restauree = new Database(dbPath, { readonly: true })
+    const lignes = restauree.prepare('SELECT numero_abonne FROM abonnes').all() as { numero_abonne: string }[]
+    expect(lignes.map((l) => l.numero_abonne)).toEqual(['50001'])
+    restauree.close()
+  })
+
+  it('supprime les fichiers -wal/-shm residuels de l ancienne base', async () => {
+    const cheminSauvegarde = path.join(dossierTest, 'sauvegarde-a-restaurer.sqlite')
+    await sauvegarderVers(getSqliteInstance(), cheminSauvegarde)
+    closeDb()
+    fs.writeFileSync(dbPath + '-wal', 'ancien wal')
+    fs.writeFileSync(dbPath + '-shm', 'ancien shm')
+
+    restaurerDepuis(cheminSauvegarde, dbPath)
+
+    expect(fs.existsSync(dbPath + '-wal')).toBe(false)
+    expect(fs.existsSync(dbPath + '-shm')).toBe(false)
   })
 })

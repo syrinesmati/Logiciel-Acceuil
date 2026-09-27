@@ -13,6 +13,7 @@ export type AppDbOuTransaction = AppDb | AppTransaction
 
 let dbInstance: AppDb | null = null
 let sqliteInstance: Database.Database | null = null
+let cheminDbCourant: string | null = null
 
 /**
  * Ouvre (ou reutilise) la connexion SQLite et applique les migrations Drizzle.
@@ -30,6 +31,7 @@ export function getDb(dbPath: string, migrationsFolder: string): AppDb {
 
   dbInstance = drizzle(sqliteInstance, { schema })
   migrate(dbInstance, { migrationsFolder })
+  cheminDbCourant = dbPath
 
   return dbInstance
 }
@@ -44,4 +46,10 @@ export function closeDb(): void {
 export function getSqliteInstance(): Database.Database {
   if (!sqliteInstance) throw new Error('Base de donnees non initialisee')
   return sqliteInstance
+}
+
+/** Chemin du fichier .sqlite actuellement ouvert (pour la restauration, voir backupService.ts). */
+export function getCheminDb(): string {
+  if (!cheminDbCourant) throw new Error('Base de donnees non initialisee')
+  return cheminDbCourant
 }

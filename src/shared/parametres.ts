@@ -32,3 +32,7 @@ export interface MotifAdmin {
 }
 
 export type ResultatChangementPin = { succes: true } | { succes: false; erreur: string }
+
+export type ApercuSauvegarde =
+  | { valide: true; chemin: string; nbAbonnes: number; nbVisites: number }
+  | { valide: false }

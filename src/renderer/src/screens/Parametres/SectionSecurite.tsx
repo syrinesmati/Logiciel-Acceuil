@@ -1,11 +1,60 @@
 import { useState, type JSX } from 'react'
+import type { ApercuSauvegarde } from '@shared/parametres'
 import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
+import { Dialog } from '@renderer/components/ui/dialog'
+
+function DialogueConfirmationRestauration({
+  apercu,
+  onAnnuler,
+  onConfirmer
+}: {
+  apercu: Extract<ApercuSauvegarde, { valide: true }>
+  onAnnuler: () => void
+  onConfirmer: () => void
+}): JSX.Element {
+  const [enCours, setEnCours] = useState(false)
+
+  return (
+    <Dialog ouvert onFermer={onAnnuler} titre="Confirmer la restauration" className="max-w-lg">
+      <div className="flex flex-col gap-4">
+        <p className="text-sm">
+          Fichier choisi : <span className="font-mono">{apercu.chemin}</span>
+          <br />
+          Contient <strong>{apercu.nbAbonnes}</strong> abonnes et <strong>{apercu.nbVisites}</strong> visites.
+        </p>
+        <p className="text-sm text-destructive">
+          Cette action va <strong>remplacer definitivement toutes les donnees actuelles</strong> par celles
+          de ce fichier, puis redemarrer l&apos;application. Elle est irreversible.
+        </p>
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" onClick={onAnnuler} disabled={enCours}>
+            Annuler
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={enCours}
+            onClick={() => {
+              setEnCours(true)
+              onConfirmer()
+            }}
+          >
+            {enCours ? 'Restauration…' : 'Confirmer et redemarrer'}
+          </Button>
+        </div>
+      </div>
+    </Dialog>
+  )
+}
 
 function SectionSauvegarde(): JSX.Element {
   const [enCours, setEnCours] = useState(false)
   const [dernierResultat, setDernierResultat] = useState<{ chemin: string } | { erreur: string } | null>(null)
+  const [apercuRestauration, setApercuRestauration] = useState<Extract<ApercuSauvegarde, { valide: true }> | null>(
+    null
+  )
+  const [erreurRestauration, setErreurRestauration] = useState<string | null>(null)
 
   async function handleSauvegarder(): Promise<void> {
     setEnCours(true)
@@ -18,6 +67,23 @@ function SectionSauvegarde(): JSX.Element {
     } finally {
       setEnCours(false)
     }
+  }
+
+  async function handleChoisirFichierRestauration(): Promise<void> {
+    setErreurRestauration(null)
+    const apercu = await window.api.parametres.choisirFichierSauvegarde()
+    if (!apercu) return
+    if (!apercu.valide) {
+      setErreurRestauration("Ce fichier n'est pas une sauvegarde valide de cette application.")
+      return
+    }
+    setApercuRestauration(apercu)
+  }
+
+  function handleConfirmerRestauration(): void {
+    if (!apercuRestauration) return
+    // L'application se ferme et redemarre juste apres : pas de reponse a attendre ici.
+    void window.api.parametres.restaurerSauvegarde(apercuRestauration.chemin)
   }
 
   return (
@@ -43,7 +109,29 @@ function SectionSauvegarde(): JSX.Element {
         <Button className="w-fit" onClick={() => void handleSauvegarder()} disabled={enCours}>
           {enCours ? 'Sauvegarde…' : 'Sauvegarder maintenant…'}
         </Button>
+
+        <div className="mt-2 border-t border-border pt-3">
+          <p className="text-sm text-muted-foreground">
+            En cas de changement de PC : restaurez ici une sauvegarde prise sur l&apos;ancien poste.
+          </p>
+          {erreurRestauration && <p className="mt-1 text-sm text-destructive">{erreurRestauration}</p>}
+          <Button
+            variant="outline"
+            className="mt-2 w-fit"
+            onClick={() => void handleChoisirFichierRestauration()}
+          >
+            Restaurer une sauvegarde…
+          </Button>
+        </div>
       </CardContent>
+
+      {apercuRestauration && (
+        <DialogueConfirmationRestauration
+          apercu={apercuRestauration}
+          onAnnuler={() => setApercuRestauration(null)}
+          onConfirmer={handleConfirmerRestauration}
+        />
+      )}
     </Card>
   )
 }

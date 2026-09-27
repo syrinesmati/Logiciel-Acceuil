@@ -107,7 +107,14 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   protege contre la corruption/fausse manipulation, PAS contre une panne du
   disque/PC) et manuelle (`Parametres > Securite`, `dialog.showSaveDialog` vers
   n'importe quel dossier — a utiliser vers une cle USB/reseau pour une vraie
-  protection contre la panne).
+  protection contre la panne). Restauration (ex. remplacement du PC) : meme
+  ecran, `dialog.showOpenDialog` + `analyserFichierSauvegarde` (ouvre le
+  fichier choisi en lecture seule, verifie que les tables attendues existent
+  et compte abonnes/visites avant tout engagement) puis, apres confirmation
+  explicite de l'utilisateur (aperçu des chiffres, avertissement irreversible),
+  `restaurerDepuis` remplace le fichier de base (et ses `-wal`/`-shm`
+  residuels) et l'app se relance immediatement (`app.relaunch()` +
+  `app.exit()`) — pas d'echange a chaud de la connexion SQLite en cours.
 - **Packaging** (`electron-builder.yml`, `build/icon.png`) : cible NSIS
   (`npm run build:win`). Deux points delicats propres a ce projet :
   - `better-sqlite3` est un module natif (N-API) : son `.node` ne peut pas se

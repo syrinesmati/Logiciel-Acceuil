@@ -1,4 +1,4 @@
-import { dialog, ipcMain, BrowserWindow } from 'electron'
+import { app, dialog, ipcMain, BrowserWindow } from 'electron'
 import { IPC } from '@shared/ipc'
 import {
   activerMotifSchema,
@@ -7,12 +7,18 @@ import {
   motifEntreeSchema,
   parametresGenerauxSchema,
   pinSchema,
-  reordonnerMotifsSchema
+  reordonnerMotifsSchema,
+  restaurerSauvegardeSchema
 } from '@shared/schemas'
-import { getSqliteInstance, type AppDb } from '../db/client'
+import { closeDb, getCheminDb, getSqliteInstance, type AppDb } from '../db/client'
 import { changerPin, definirPin, pinEstDefini, verifierPin } from '../services/pinService'
 import { obtenirParametresGeneraux, enregistrerParametresGeneraux } from '../services/parametresService'
-import { nommerFichierSauvegardeManuelle, sauvegarderVers } from '../services/backupService'
+import {
+  analyserFichierSauvegarde,
+  nommerFichierSauvegardeManuelle,
+  restaurerDepuis,
+  sauvegarderVers
+} from '../services/backupService'
 import {
   activerDesactiverMotif,
   creerMotif,
@@ -50,6 +56,30 @@ export function enregistrerIpcParametres(db: AppDb): void {
 
     await sauvegarderVers(getSqliteInstance(), resultat.filePath)
     return resultat.filePath
+  })
+
+  ipcMain.handle(IPC.parametresChoisirFichierSauvegarde, async (event) => {
+    const fenetre = BrowserWindow.fromWebContents(event.sender)!
+    const resultat = await dialog.showOpenDialog(fenetre, {
+      title: 'Choisir un fichier de sauvegarde',
+      properties: ['openFile'],
+      filters: [{ name: 'Base de donnees SQLite', extensions: ['sqlite'] }]
+    })
+    if (resultat.canceled || resultat.filePaths.length === 0) return null
+
+    return analyserFichierSauvegarde(resultat.filePaths[0]!)
+  })
+
+  // Remplace la base par le fichier de sauvegarde choisi puis relance
+  // immediatement l'app : ce n'est pas une operation a chaud, tout l'etat en
+  // memoire (connexion SQLite, ecrans ouverts) doit repartir de zero.
+  ipcMain.handle(IPC.parametresRestaurerSauvegarde, (_event, payloadBrut) => {
+    const { chemin } = restaurerSauvegardeSchema.parse({ chemin: payloadBrut })
+    const cheminDb = getCheminDb()
+    closeDb()
+    restaurerDepuis(chemin, cheminDb)
+    app.relaunch()
+    app.exit()
   })
 
   ipcMain.handle(IPC.parametresObtenirGeneraux, () => obtenirParametresGeneraux(db))

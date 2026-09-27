@@ -74,6 +74,10 @@ export const rechercherParNomSchema = z.object({
   requete: z.string().min(1)
 })
 
+export const restaurerSauvegardeSchema = z.object({
+  chemin: z.string().min(1)
+})
+
 export const correctionManuelleSchema = z.object({
   id: z.number(),
   numeroAbonne: z.string().min(1, "Le numero d'abonne est obligatoire"),

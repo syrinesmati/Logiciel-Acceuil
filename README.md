@@ -89,6 +89,12 @@ regulierement (ex. chaque semaine) une **sauvegarde manuelle** depuis
 Parametres > Securite > "Sauvegarder maintenant…", vers une cle USB ou un
 dossier partage sur le reseau.
 
+**En cas de remplacement du PC** : installez le logiciel normalement sur le
+nouveau poste, puis dans Parametres > Securite > "Restaurer une sauvegarde…",
+choisissez le fichier `.sqlite` recupere sur l'ancien poste. Un apercu (nombre
+d'abonnes/visites) est affiche avant confirmation ; l'operation remplace
+toutes les donnees actuelles et redemarre l'application.
+
 ## Parametres (protege par code PIN)
 
 Onglet **Parametres**. Au tout premier acces, l'app demande de definir un code
