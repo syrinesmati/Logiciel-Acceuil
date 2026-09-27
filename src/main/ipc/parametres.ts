@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { dialog, ipcMain, BrowserWindow } from 'electron'
 import { IPC } from '@shared/ipc'
 import {
   activerMotifSchema,
@@ -9,9 +9,10 @@ import {
   pinSchema,
   reordonnerMotifsSchema
 } from '@shared/schemas'
-import type { AppDb } from '../db/client'
+import { getSqliteInstance, type AppDb } from '../db/client'
 import { changerPin, definirPin, pinEstDefini, verifierPin } from '../services/pinService'
 import { obtenirParametresGeneraux, enregistrerParametresGeneraux } from '../services/parametresService'
+import { nommerFichierSauvegardeManuelle, sauvegarderVers } from '../services/backupService'
 import {
   activerDesactiverMotif,
   creerMotif,
@@ -36,6 +37,19 @@ export function enregistrerIpcParametres(db: AppDb): void {
   ipcMain.handle(IPC.parametresChangerPin, (_event, payloadBrut) => {
     const payload = changerPinSchema.parse(payloadBrut)
     return changerPin(payload.ancienPin, payload.nouveauPin, db)
+  })
+
+  ipcMain.handle(IPC.parametresSauvegarderMaintenant, async (event) => {
+    const fenetre = BrowserWindow.fromWebContents(event.sender)!
+    const resultat = await dialog.showSaveDialog(fenetre, {
+      title: 'Sauvegarder la base de donnees',
+      defaultPath: nommerFichierSauvegardeManuelle(),
+      filters: [{ name: 'Base de donnees SQLite', extensions: ['sqlite'] }]
+    })
+    if (resultat.canceled || !resultat.filePath) return null
+
+    await sauvegarderVers(getSqliteInstance(), resultat.filePath)
+    return resultat.filePath
   })
 
   ipcMain.handle(IPC.parametresObtenirGeneraux, () => obtenirParametresGeneraux(db))

@@ -3,6 +3,51 @@ import { Button } from '@renderer/components/ui/button'
 import { Input } from '@renderer/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
 
+function SectionSauvegarde(): JSX.Element {
+  const [enCours, setEnCours] = useState(false)
+  const [dernierResultat, setDernierResultat] = useState<{ chemin: string } | { erreur: string } | null>(null)
+
+  async function handleSauvegarder(): Promise<void> {
+    setEnCours(true)
+    setDernierResultat(null)
+    try {
+      const chemin = await window.api.parametres.sauvegarderMaintenant()
+      if (chemin) setDernierResultat({ chemin })
+    } catch {
+      setDernierResultat({ erreur: 'Echec de la sauvegarde. Reessayez.' })
+    } finally {
+      setEnCours(false)
+    }
+  }
+
+  return (
+    <Card className="max-w-md">
+      <CardHeader>
+        <CardTitle>Sauvegarde de la base de donnees</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        <p className="text-sm text-muted-foreground">
+          Une copie automatique est faite chaque jour sur ce PC (dossier de l&apos;application) :
+          elle protege contre une corruption ou une fausse manipulation, mais{' '}
+          <strong>pas contre une panne du disque ou du PC</strong>. Pensez a faire regulierement
+          une sauvegarde manuelle vers une cle USB ou un dossier reseau.
+        </p>
+
+        {dernierResultat && 'chemin' in dernierResultat && (
+          <p className="text-sm text-emerald-600">Sauvegarde enregistree : {dernierResultat.chemin}</p>
+        )}
+        {dernierResultat && 'erreur' in dernierResultat && (
+          <p className="text-sm text-destructive">{dernierResultat.erreur}</p>
+        )}
+
+        <Button className="w-fit" onClick={() => void handleSauvegarder()} disabled={enCours}>
+          {enCours ? 'Sauvegarde…' : 'Sauvegarder maintenant…'}
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function SectionSecurite(): JSX.Element {
   const [ancienPin, setAncienPin] = useState('')
   const [nouveauPin, setNouveauPin] = useState('')
@@ -39,50 +84,54 @@ export function SectionSecurite(): JSX.Element {
   }
 
   return (
-    <Card className="max-w-md">
-      <CardHeader>
-        <CardTitle>Changer le code PIN</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1 text-sm">
-          <span>Code PIN actuel</span>
-          <Input
-            type="password"
-            inputMode="numeric"
-            value={ancienPin}
-            onChange={(e) => setAncienPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm">
-          <span>Nouveau code PIN</span>
-          <Input
-            type="password"
-            inputMode="numeric"
-            value={nouveauPin}
-            onChange={(e) => setNouveauPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-sm">
-          <span>Confirmer le nouveau code PIN</span>
-          <Input
-            type="password"
-            inputMode="numeric"
-            value={confirmation}
-            onChange={(e) => setConfirmation(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          />
-        </label>
+    <div className="flex flex-col gap-6">
+      <Card className="max-w-md">
+        <CardHeader>
+          <CardTitle>Changer le code PIN</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <label className="flex flex-col gap-1 text-sm">
+            <span>Code PIN actuel</span>
+            <Input
+              type="password"
+              inputMode="numeric"
+              value={ancienPin}
+              onChange={(e) => setAncienPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span>Nouveau code PIN</span>
+            <Input
+              type="password"
+              inputMode="numeric"
+              value={nouveauPin}
+              onChange={(e) => setNouveauPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span>Confirmer le nouveau code PIN</span>
+            <Input
+              type="password"
+              inputMode="numeric"
+              value={confirmation}
+              onChange={(e) => setConfirmation(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            />
+          </label>
 
-        {erreur && <p className="text-sm text-destructive">{erreur}</p>}
-        {succes && <p className="text-sm text-emerald-600">Code PIN modifie avec succes.</p>}
+          {erreur && <p className="text-sm text-destructive">{erreur}</p>}
+          {succes && <p className="text-sm text-emerald-600">Code PIN modifie avec succes.</p>}
 
-        <Button
-          className="w-fit"
-          onClick={() => void handleChanger()}
-          disabled={envoiEnCours || !ancienPin || nouveauPin.length < 4}
-        >
-          {envoiEnCours ? 'Enregistrement…' : 'Changer le code PIN'}
-        </Button>
-      </CardContent>
-    </Card>
+          <Button
+            className="w-fit"
+            onClick={() => void handleChanger()}
+            disabled={envoiEnCours || !ancienPin || nouveauPin.length < 4}
+          >
+            {envoiEnCours ? 'Enregistrement…' : 'Changer le code PIN'}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <SectionSauvegarde />
+    </div>
   )
 }

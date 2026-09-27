@@ -43,6 +43,7 @@ export const IPC = {
   parametresDefinirPin: 'parametres:definir-pin',
   parametresVerifierPin: 'parametres:verifier-pin',
   parametresChangerPin: 'parametres:changer-pin',
+  parametresSauvegarderMaintenant: 'parametres:sauvegarder-maintenant',
   parametresObtenirGeneraux: 'parametres:obtenir-generaux',
   parametresEnregistrerGeneraux: 'parametres:enregistrer-generaux',
   parametresListerMotifs: 'parametres:lister-motifs',
@@ -100,6 +101,7 @@ export interface ApiRenderer {
     definirPin: (pin: string) => Promise<void>
     verifierPin: (pin: string) => Promise<boolean>
     changerPin: (payload: { ancienPin: string; nouveauPin: string }) => Promise<ResultatChangementPin>
+    sauvegarderMaintenant: () => Promise<string | null>
     obtenirGeneraux: () => Promise<ParametresGeneraux>
     enregistrerGeneraux: (payload: ParametresGeneraux) => Promise<void>
     listerMotifs: () => Promise<MotifAdmin[]>

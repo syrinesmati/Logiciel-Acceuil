@@ -32,6 +32,7 @@ const api: ApiRenderer = {
     definirPin: (pin) => ipcRenderer.invoke(IPC.parametresDefinirPin, pin),
     verifierPin: (pin) => ipcRenderer.invoke(IPC.parametresVerifierPin, pin),
     changerPin: (payload) => ipcRenderer.invoke(IPC.parametresChangerPin, payload),
+    sauvegarderMaintenant: () => ipcRenderer.invoke(IPC.parametresSauvegarderMaintenant),
     obtenirGeneraux: () => ipcRenderer.invoke(IPC.parametresObtenirGeneraux),
     enregistrerGeneraux: (payload) => ipcRenderer.invoke(IPC.parametresEnregistrerGeneraux, payload),
     listerMotifs: () => ipcRenderer.invoke(IPC.parametresListerMotifs),

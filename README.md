@@ -79,6 +79,16 @@ Deux boutons d'export pour la periode filtree :
   noms arabes s'affichent correctement (meme police locale que le reste de
   l'app).
 
+## Sauvegarde
+
+La base de donnees est un fichier local sur ce PC (`%APPDATA%\bibliotheque-accueil`) :
+**une copie automatique quotidienne est faite dans ce meme dossier**
+(`sauvegardes-automatiques/`, 14 derniers jours conserves), mais elle ne protege
+pas contre une panne du disque ou du PC. Pour une vraie protection, faites
+regulierement (ex. chaque semaine) une **sauvegarde manuelle** depuis
+Parametres > Securite > "Sauvegarder maintenant…", vers une cle USB ou un
+dossier partage sur le reseau.
+
 ## Parametres (protege par code PIN)
 
 Onglet **Parametres**. Au tout premier acces, l'app demande de definir un code

@@ -1,11 +1,12 @@
 import { join } from 'path'
 import { app, session, shell, BrowserWindow } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { getDb, closeDb } from './db/client'
+import { getDb, closeDb, getSqliteInstance } from './db/client'
 import { enregistrerTousLesIpc } from './ipc'
 import { Logger } from './services/logger'
 import { assurerMotifsParDefaut } from './services/motifsService'
 import { assurerParametresParDefaut } from './services/parametresService'
+import { effectuerSauvegardeAutomatiqueSiNecessaire } from './services/backupService'
 
 /**
  * CSP posee dynamiquement plutot que dans index.html : en dev, le renderer est
@@ -92,6 +93,12 @@ app.whenReady().then(() => {
     logger.error("Echec de l'initialisation de la base de donnees", erreur)
     throw erreur
   }
+
+  // Filet de securite local (voir backupService.ts) : ne bloque jamais le
+  // demarrage de l'app si elle echoue (disque plein, dossier verrouille...).
+  effectuerSauvegardeAutomatiqueSiNecessaire(getSqliteInstance(), app.getPath('userData'))
+    .then(() => logger.info('Sauvegarde automatique verifiee/effectuee'))
+    .catch((erreur) => logger.error('Echec de la sauvegarde automatique', erreur))
 
   creerFenetrePrincipale()
 

@@ -39,3 +39,9 @@ export function closeDb(): void {
   sqliteInstance = null
   dbInstance = null
 }
+
+/** Instance brute better-sqlite3 (pour la sauvegarde, voir services/backupService.ts). */
+export function getSqliteInstance(): Database.Database {
+  if (!sqliteInstance) throw new Error('Base de donnees non initialisee')
+  return sqliteInstance
+}

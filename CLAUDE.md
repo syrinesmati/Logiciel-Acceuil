@@ -97,6 +97,17 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   apres un `requestAnimationFrame` + delai pour laisser Recharts terminer sa
   passe de mesure) avant que le main appelle `webContents.printToPDF`. Pas de
   second point d'entree Vite : plus simple a maintenir qu'une config MPA.
+- **Sauvegarde** (`services/backupService.ts`) : la base est un fichier SQLite
+  local (`userData`), sans aucune redondance externe — non prevu par le cahier
+  des charges, ajoute apres coup. Utilise `Database#backup()` de better-sqlite3
+  (API de sauvegarde en ligne de SQLite), jamais une copie brute du fichier
+  (dangereux en mode WAL avec des ecritures en cours). Deux mecanismes :
+  automatique (une copie par jour dans `userData/sauvegardes-automatiques/`,
+  purgee au-dela de 14 jours, lancee au demarrage sans jamais bloquer l'app —
+  protege contre la corruption/fausse manipulation, PAS contre une panne du
+  disque/PC) et manuelle (`Parametres > Securite`, `dialog.showSaveDialog` vers
+  n'importe quel dossier — a utiliser vers une cle USB/reseau pour une vraie
+  protection contre la panne).
 - **Packaging** (`electron-builder.yml`, `build/icon.png`) : cible NSIS
   (`npm run build:win`). Deux points delicats propres a ce projet :
   - `better-sqlite3` est un module natif (N-API) : son `.node` ne peut pas se
