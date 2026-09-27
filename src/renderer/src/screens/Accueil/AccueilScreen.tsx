@@ -155,6 +155,7 @@ export function AccueilScreen(): JSX.Element {
         <EcranScan
           compteurAujourdhui={compteurAujourdhui}
           chargement={chargement}
+          focusActif={!rechercheOuverte && !cinDialogOuvert}
           onScanner={traiterNumero}
           onOuvrirRecherche={() => setRechercheOuverte(true)}
           onOuvrirCin={() => setCinDialogOuvert(true)}

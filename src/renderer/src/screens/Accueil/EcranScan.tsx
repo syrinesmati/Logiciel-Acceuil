@@ -5,6 +5,8 @@ import { Button } from '@renderer/components/ui/button'
 interface Props {
   compteurAujourdhui: number
   chargement: boolean
+  /** false quand une boite de dialogue (recherche, CIN...) est ouverte par-dessus : ne pas lui voler le focus. */
+  focusActif: boolean
   onScanner: (numero: string) => void
   onOuvrirRecherche: () => void
   onOuvrirCin: () => void
@@ -13,6 +15,7 @@ interface Props {
 export function EcranScan({
   compteurAujourdhui,
   chargement,
+  focusActif,
   onScanner,
   onOuvrirRecherche,
   onOuvrirCin
@@ -22,14 +25,15 @@ export function EcranScan({
 
   useEffect(() => {
     const input = inputRef.current
-    if (!input) return undefined
+    if (!input || !focusActif) return undefined
     input.focus()
 
     const refocus = (): void => input.focus()
-    // Re-focalise si l'utilisateur clique ailleurs (voir 4.1).
+    // Re-focalise si l'utilisateur clique ailleurs (voir 4.1) — desactive quand
+    // une boite de dialogue est ouverte par-dessus (sinon impossible d'y saisir du texte).
     window.addEventListener('click', refocus)
     return () => window.removeEventListener('click', refocus)
-  }, [])
+  }, [focusActif])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent): void {
@@ -73,7 +77,9 @@ export function EcranScan({
           autoFocus
           value={valeur}
           onChange={(e) => setValeur(e.target.value)}
-          onBlur={() => setTimeout(() => inputRef.current?.focus(), 0)}
+          onBlur={() => {
+            if (focusActif) setTimeout(() => inputRef.current?.focus(), 0)
+          }}
           disabled={chargement}
           inputMode="numeric"
           placeholder="Numéro d'abonné…"
