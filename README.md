@@ -55,6 +55,18 @@ visites). `F2` ouvre une recherche par nom (tolerante aux variantes arabes).
 Sans action pendant 30 secondes (delai configurable), l'ecran revient
 automatiquement au scan.
 
+## Tableau de bord (protege par code PIN)
+
+Onglet **Tableau de bord**. Filtre de periode en haut (aujourd'hui / cette
+semaine / ce mois / cette annee / periode personnalisee) qui met a jour tous
+les indicateurs et graphiques. Cartes cles (visites, abonnes uniques, moyenne
+par jour, comparaison en % avec la periode precedente), evolution dans le
+temps, repartition par motif / tranche d'age / sexe, croisement motif x
+tranche d'age, heures d'affluence (jour de semaine x heure) et top 10 des
+abonnes les plus assidus. L'age est toujours calcule a la date de la visite,
+pas a aujourd'hui. Toutes les agregations sont calculees cote main (jamais
+toutes les visites chargees dans le renderer).
+
 ## Parametres (protege par code PIN)
 
 Onglet **Parametres**. Au tout premier acces, l'app demande de definir un code

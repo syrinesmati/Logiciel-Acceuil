@@ -66,6 +66,17 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   renommage, icone/couleur, activation, reordonnancement drag & drop + fleches),
   tranches d'age et delais stockes en JSON/texte dans `parametres`, onglets Import
   Syracuse / Lignes a corriger / Historique reutilisent les ecrans de la phase 2.
+- **Tableau de bord** (`services/statsService.ts`, `statsCalculs.ts`, `chargeurStats.ts`,
+  `periode.ts` + `renderer/src/screens/Dashboard/`) : `chargeurStats.ts` charge en
+  une requete SQL les visites *de la periode filtree uniquement* (jamais toutes les
+  visites) avec juste ce qu'il faut (abonne, motifs) ; tout le calcul (indicateurs,
+  evolution, repartitions, croisement motif x age, heatmap, top 10) est ensuite fait
+  par des fonctions JS pures dans `statsCalculs.ts`, testables sans DB. Choix
+  deliberement different d'agregations SQL pures : l'age a la date de la visite et
+  les bornes de jour locales sont plus surs a calculer avec `calculerAge`/Date locale
+  qu'avec les fonctions de date de SQLite sur des timestamps UTC. Le renderer ne
+  recoit jamais que le resultat agrege final (`TableauDeBord`). Protege par le meme
+  `ParametresGate` que les Parametres, mais navigation separee ("Tableau de bord").
 
 ## Donnees et confidentialite
 
@@ -104,8 +115,9 @@ code du process main.**
 - Noms de variables/fonctions/commentaires en francais (coherent avec le domaine
   metier et l'utilisateur final).
 - Zod pour valider toute entree IPC et tout formulaire.
-- Toute agregation statistique se fait en SQL cote main (`services/stats.ts`), jamais
-  en chargeant toutes les visites dans le renderer.
+- Les statistiques se calculent cote main a partir des seules visites de la periode
+  filtree (jamais "toutes les visites"), et seul le resultat agrege est renvoye au
+  renderer (voir `services/statsCalculs.ts`).
 - Polices arabes embarquees localement dans `src/renderer/src/assets/fonts/` (Noto
   Sans Arabic, subsets arabic+latin telecharges depuis Google Fonts) — jamais de CDN,
   l'app doit fonctionner hors ligne.
@@ -113,8 +125,8 @@ code du process main.**
 ## Etat d'avancement
 
 Voir le plan approuve dans la conversation Claude Code pour le detail des 7 phases.
-Phases 1 (initialisation), 2 (import Syracuse), 3 (ecran d'accueil) et 4
-(parametres + code PIN) terminees. Phase 5 (tableau de bord statistiques) a venir.
-La navigation est desormais : Accueil (libre) / Parametres (protege par PIN, avec
-sous-onglets General, Motifs, Import Syracuse, Lignes a corriger, Historique,
-Securite).
+Phases 1 a 5 terminees (initialisation, import Syracuse, ecran d'accueil,
+parametres + code PIN, tableau de bord). Phase 6 (export Excel/PDF) a venir.
+Navigation : Accueil (libre) / Tableau de bord (protege par PIN) / Parametres
+(protege par PIN, sous-onglets General, Motifs, Import Syracuse, Lignes a
+corriger, Historique, Securite).

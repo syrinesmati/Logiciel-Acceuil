@@ -16,6 +16,7 @@ import type {
   ResultatRecherche
 } from './accueil'
 import type { MotifAdmin, ParametresGeneraux, ResultatChangementPin } from './parametres'
+import type { FiltrePeriode, TableauDeBord } from './stats'
 
 /** Noms de canaux IPC centralises pour eviter les fautes de frappe entre main/preload/renderer. */
 export const IPC = {
@@ -46,7 +47,8 @@ export const IPC = {
   parametresCreerMotif: 'parametres:creer-motif',
   parametresModifierMotif: 'parametres:modifier-motif',
   parametresActiverMotif: 'parametres:activer-motif',
-  parametresReordonnerMotifs: 'parametres:reordonner-motifs'
+  parametresReordonnerMotifs: 'parametres:reordonner-motifs',
+  statsObtenirTableauDeBord: 'stats:obtenir-tableau-de-bord'
 } as const
 
 export interface ApiRenderer {
@@ -104,6 +106,9 @@ export interface ApiRenderer {
     }) => Promise<MotifAdmin>
     activerMotif: (payload: { id: number; actif: boolean }) => Promise<MotifAdmin>
     reordonnerMotifs: (ordreIds: number[]) => Promise<void>
+  }
+  stats: {
+    obtenirTableauDeBord: (filtre: FiltrePeriode) => Promise<TableauDeBord>
   }
 }
 

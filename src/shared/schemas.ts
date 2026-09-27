@@ -121,3 +121,9 @@ export const activerMotifSchema = z.object({
 export const reordonnerMotifsSchema = z.object({
   ordreIds: z.array(z.number()).min(1)
 })
+
+export const filtrePeriodeSchema = z.object({
+  type: z.enum(['aujourdhui', 'semaine', 'mois', 'annee', 'personnalisee']),
+  dateDebut: z.string().optional(),
+  dateFin: z.string().optional()
+})

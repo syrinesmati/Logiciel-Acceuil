@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import type { JSX } from 'react'
-import { Settings } from 'lucide-react'
+import { BarChart3, Settings } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import { AccueilScreen } from '@renderer/screens/Accueil/AccueilScreen'
 import { ParametresScreen } from '@renderer/screens/Parametres/ParametresScreen'
+import { DashboardScreen } from '@renderer/screens/Dashboard/DashboardScreen'
 
-type Ecran = 'accueil' | 'parametres'
+type Ecran = 'accueil' | 'tableauDeBord' | 'parametres'
 
 function App(): JSX.Element {
   const [ecran, setEcran] = useState<Ecran>('accueil')
@@ -16,19 +17,30 @@ function App(): JSX.Element {
         <Button variant={ecran === 'accueil' ? 'default' : 'ghost'} size="sm" onClick={() => setEcran('accueil')}>
           Accueil
         </Button>
-        <Button
-          variant={ecran === 'parametres' ? 'default' : 'ghost'}
-          size="sm"
-          onClick={() => setEcran('parametres')}
-        >
-          <Settings className="h-4 w-4" />
-          Parametres
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={ecran === 'tableauDeBord' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setEcran('tableauDeBord')}
+          >
+            <BarChart3 className="h-4 w-4" />
+            Tableau de bord
+          </Button>
+          <Button
+            variant={ecran === 'parametres' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setEcran('parametres')}
+          >
+            <Settings className="h-4 w-4" />
+            Parametres
+          </Button>
+        </div>
       </nav>
 
       <div className="flex-1">
         {ecran === 'accueil' && <AccueilScreen />}
-        {/* Demontee quand on quitte l'onglet : le PIN est redemande a chaque nouvel acces. */}
+        {/* Demontees quand on quitte l'onglet : le PIN est redemande a chaque nouvel acces. */}
+        {ecran === 'tableauDeBord' && <DashboardScreen />}
         {ecran === 'parametres' && <ParametresScreen />}
       </div>
     </div>

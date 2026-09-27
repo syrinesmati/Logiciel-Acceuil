@@ -38,6 +38,9 @@ const api: ApiRenderer = {
     modifierMotif: (payload) => ipcRenderer.invoke(IPC.parametresModifierMotif, payload),
     activerMotif: (payload) => ipcRenderer.invoke(IPC.parametresActiverMotif, payload),
     reordonnerMotifs: (ordreIds) => ipcRenderer.invoke(IPC.parametresReordonnerMotifs, ordreIds)
+  },
+  stats: {
+    obtenirTableauDeBord: (filtre) => ipcRenderer.invoke(IPC.statsObtenirTableauDeBord, filtre)
   }
 }
 
