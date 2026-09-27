@@ -50,30 +50,37 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [motifs, motifsSelectionnes, chargement, onAnnuler, onValider])
 
+  const initiale = abonne.nomComplet.trim().charAt(0).toUpperCase() || '?'
+
   return (
     <div className="animate-in fade-in zoom-in-95 mx-auto flex max-w-3xl flex-col gap-8 p-8 duration-300">
-      <div className="rounded-xl border border-border bg-card p-8 text-center shadow-sm">
-        <p className="text-sm text-muted-foreground">
-          {abonne.source === 'non_abonne' ? `Visiteur non-abonné · CIN ${abonne.numeroAbonne}` : `Abonné n° ${abonne.numeroAbonne}`}
-        </p>
-        <p dir="auto" className="mt-1 text-4xl font-bold">
-          {abonne.nomComplet}
-        </p>
-        <p className="mt-2 text-lg text-muted-foreground">
-          {abonne.age !== null ? `${abonne.age} ans` : 'Âge inconnu'}
-        </p>
+      <div className="shadow-glow-sm flex flex-col items-center gap-6 rounded-2xl border border-border/60 bg-card p-8 text-center sm:flex-row sm:text-left">
+        <div className="from-primary to-primary-2 shadow-glow flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-3xl font-bold text-white">
+          {initiale}
+        </div>
+        <div className="flex-1">
+          <p className="text-sm text-muted-foreground">
+            {abonne.source === 'non_abonne' ? `Visiteur non-abonné · CIN ${abonne.numeroAbonne}` : `Abonné n° ${abonne.numeroAbonne}`}
+          </p>
+          <p dir="auto" className="mt-0.5 text-3xl font-bold">
+            {abonne.nomComplet}
+          </p>
+          <p className="mt-1 text-base text-muted-foreground">
+            {abonne.age !== null ? `${abonne.age} ans` : 'Âge inconnu'}
+          </p>
 
-        {!abonne.sexe && (
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <span className="text-sm text-muted-foreground">Sexe non renseigné :</span>
-            <Button size="sm" variant="outline" onClick={() => onCompleterSexe('H')}>
-              Homme
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => onCompleterSexe('F')}>
-              Femme
-            </Button>
-          </div>
-        )}
+          {!abonne.sexe && (
+            <div className="mt-3 flex items-center justify-center gap-3 sm:justify-start">
+              <span className="text-sm text-muted-foreground">Sexe non renseigné :</span>
+              <Button size="sm" variant="outline" onClick={() => onCompleterSexe('H')}>
+                Homme
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => onCompleterSexe('F')}>
+                Femme
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div>
@@ -95,10 +102,10 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
                 type="button"
                 onClick={() => basculerMotif(motif.id)}
                 className={cn(
-                  'relative flex flex-col items-center gap-2 rounded-xl border-2 p-6 text-lg font-medium shadow-sm transition-all',
+                  'relative flex flex-col items-center gap-3 rounded-xl border-2 p-6 text-lg font-medium shadow-sm transition-all duration-150',
                   selectionne
-                    ? 'scale-[1.03] border-transparent text-white shadow-md'
-                    : 'border-border bg-card hover:bg-accent'
+                    ? 'scale-[1.03] border-transparent text-white shadow-lg'
+                    : 'border-border bg-card hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md'
                 )}
                 style={selectionne ? { backgroundColor: motif.couleur } : undefined}
               >
@@ -107,7 +114,12 @@ export function FicheAbonne({ abonne, motifs, chargement, onCompleterSexe, onVal
                     <Check className="h-4 w-4" style={{ color: motif.couleur }} strokeWidth={3} />
                   </span>
                 )}
-                <Icone className="h-8 w-8" style={selectionne ? undefined : { color: motif.couleur }} />
+                <span
+                  className="flex h-12 w-12 items-center justify-center rounded-full"
+                  style={{ backgroundColor: selectionne ? 'rgba(255,255,255,0.2)' : `${motif.couleur}1A` }}
+                >
+                  <Icone className="h-6 w-6" style={{ color: selectionne ? '#fff' : motif.couleur }} />
+                </span>
                 {motif.libelle}
                 <span className="text-xs opacity-70">({index + 1})</span>
               </button>

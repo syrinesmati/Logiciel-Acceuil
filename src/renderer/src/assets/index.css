@@ -25,24 +25,27 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Neutres a peine teintes (bleu tres desature) plutot que du gris pur : plus
+     chaleureux qu'un theme shadcn par defaut, sans sacrifier la lisibilite. */
+  --background: oklch(0.98 0.004 260);
+  --foreground: oklch(0.18 0.014 260);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.18 0.014 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.18 0.014 260);
   --primary: #2563eb;
+  --primary-2: #7c3aed;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.955 0.008 260);
+  --secondary-foreground: oklch(0.22 0.014 260);
+  --muted: oklch(0.955 0.008 260);
+  --muted-foreground: oklch(0.52 0.018 260);
+  --accent: oklch(0.94 0.02 255);
+  --accent-foreground: oklch(0.22 0.014 260);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: oklch(0.9 0.01 260);
+  --input: oklch(0.9 0.01 260);
   --ring: #2563eb;
   --radius: 0.75rem;
 }
@@ -55,6 +58,7 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-2: var(--primary-2);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -72,6 +76,11 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.25rem);
   --font-sans: 'Segoe UI', 'Noto Sans Arabic', system-ui, sans-serif;
+  /* Ombres teintees (bleu primaire) pour donner du relief aux elements mis en
+     avant, plutot que les ombres grises plates du theme shadcn par defaut. */
+  --shadow-glow-sm: 0 4px 16px -4px rgba(37, 99, 235, 0.25);
+  --shadow-glow: 0 10px 30px -8px rgba(37, 99, 235, 0.35);
+  --shadow-glow-lg: 0 20px 60px -12px rgba(37, 99, 235, 0.4);
 }
 
 @layer base {

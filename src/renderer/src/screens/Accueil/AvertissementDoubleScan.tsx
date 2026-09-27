@@ -28,26 +28,30 @@ export function AvertissementDoubleScan({ abonne, derniereVisite, onAnnuler, onC
   }, [onAnnuler, onContinuer])
 
   return (
-    <div className="animate-in fade-in zoom-in-95 mx-auto flex max-w-lg flex-col items-center gap-6 p-8 text-center duration-300">
-      <AlertTriangle className="h-16 w-16 text-amber-500" />
-      <div>
-        <h1 className="text-2xl font-semibold">Déjà scanné récemment</h1>
-        <p dir="auto" className="mt-2 text-xl">
-          {abonne.nomComplet}
-        </p>
-        <p className="mt-1 text-muted-foreground">
-          {derniereVisite
-            ? `Ce numéro a déjà été scanné il y a ${formaterDelai(derniereVisite)}.`
-            : 'Ce numéro a déjà été scanné récemment.'}
-        </p>
-      </div>
-      <div className="flex gap-3">
-        <Button variant="outline" size="lg" onClick={onAnnuler}>
-          Annuler (Échap)
-        </Button>
-        <Button size="lg" onClick={onContinuer}>
-          Continuer quand même (Entrée)
-        </Button>
+    <div className="animate-in fade-in zoom-in-95 mx-auto flex min-h-full max-w-lg flex-col items-center justify-center gap-6 p-8 text-center duration-300">
+      <div className="flex flex-col items-center gap-6 rounded-2xl border border-amber-200 bg-amber-50 p-10 shadow-sm">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100">
+          <AlertTriangle className="h-8 w-8 text-amber-600" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold">Déjà scanné récemment</h1>
+          <p dir="auto" className="mt-2 text-xl">
+            {abonne.nomComplet}
+          </p>
+          <p className="mt-1 text-muted-foreground">
+            {derniereVisite
+              ? `Ce numéro a déjà été scanné il y a ${formaterDelai(derniereVisite)}.`
+              : 'Ce numéro a déjà été scanné récemment.'}
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <Button variant="outline" size="lg" onClick={onAnnuler}>
+            Annuler (Échap)
+          </Button>
+          <Button size="lg" onClick={onContinuer}>
+            Continuer quand même (Entrée)
+          </Button>
+        </div>
       </div>
     </div>
   )

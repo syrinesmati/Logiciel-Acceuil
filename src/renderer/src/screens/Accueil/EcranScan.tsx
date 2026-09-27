@@ -75,7 +75,12 @@ export function EcranScan({
   }
 
   return (
-    <div className="animate-in fade-in relative flex min-h-full flex-col items-center justify-center gap-10 p-8 duration-300">
+    <div className="animate-in fade-in relative flex min-h-full flex-col items-center justify-center gap-8 p-8 duration-300">
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{ background: 'radial-gradient(55% 45% at 50% 32%, rgba(37,99,235,0.07), transparent 70%)' }}
+      />
+
       <div className="absolute right-6 top-6 flex items-start gap-4">
         <div className="rounded-full border border-border bg-card px-4 py-2 text-sm shadow-sm">
           Visites aujourd&apos;hui : <span className="font-semibold text-primary">{compteurAujourdhui}</span>
@@ -83,44 +88,47 @@ export function EcranScan({
         <Horloge />
       </div>
 
-      <div className="relative flex h-36 w-36 items-center justify-center">
-        <span className="bg-primary/10 absolute inset-0 animate-pulse rounded-full" />
-        <span className="bg-primary/10 absolute inset-3 rounded-full" />
-        <ScanLine className="text-primary relative h-16 w-16" strokeWidth={1.5} />
-      </div>
+      <div className="shadow-glow-sm relative flex w-full max-w-xl flex-col items-center gap-8 rounded-3xl border border-border/60 bg-card px-10 py-12">
+        <div className="relative flex h-32 w-32 items-center justify-center">
+          <span className="bg-primary/10 absolute inset-0 animate-pulse rounded-full" />
+          <span className="bg-primary/15 absolute inset-3 rounded-full" />
+          <span className="from-primary to-primary-2 shadow-glow absolute inset-6 rounded-full bg-gradient-to-br" />
+          <ScanLine className="relative h-12 w-12 text-white" strokeWidth={1.75} />
+        </div>
 
-      <div className="text-center">
-        <h1 className="text-3xl font-semibold">Scannez la carte de l&apos;abonné</h1>
-        <p className="mt-2 text-lg text-muted-foreground">
-          ou saisissez le numéro d&apos;abonné au clavier puis validez
-        </p>
-      </div>
+        <div className="text-center">
+          <h1 className="text-3xl font-semibold">Scannez la carte de l&apos;abonné</h1>
+          <p className="mt-2 text-lg text-muted-foreground">
+            ou saisissez le numéro d&apos;abonné au clavier puis validez
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit} className="w-full max-w-xl">
-        <input
-          ref={inputRef}
-          autoFocus
-          value={valeur}
-          onChange={(e) => setValeur(e.target.value)}
-          onBlur={() => {
-            if (focusActif) setTimeout(() => inputRef.current?.focus(), 0)
-          }}
-          disabled={chargement}
-          inputMode="numeric"
-          placeholder="Numéro d'abonné…"
-          className="focus-visible:border-primary w-full rounded-xl border-2 border-input bg-background px-6 py-5 text-center text-3xl tracking-widest shadow-sm outline-none transition-colors"
-        />
-      </form>
+        <form onSubmit={handleSubmit} className="w-full">
+          <input
+            ref={inputRef}
+            autoFocus
+            value={valeur}
+            onChange={(e) => setValeur(e.target.value)}
+            onBlur={() => {
+              if (focusActif) setTimeout(() => inputRef.current?.focus(), 0)
+            }}
+            disabled={chargement}
+            inputMode="numeric"
+            placeholder="Numéro d'abonné…"
+            className="focus-visible:border-primary focus-visible:shadow-glow-sm w-full rounded-xl border-2 border-input bg-background px-6 py-5 text-center text-3xl tracking-widest shadow-sm outline-none transition-all"
+          />
+        </form>
 
-      <div className="flex gap-2">
-        <Button variant="ghost" size="sm" onClick={onOuvrirRecherche}>
-          <Search className="h-4 w-4" />
-          Rechercher par nom (F2)
-        </Button>
-        <Button variant="ghost" size="sm" onClick={onOuvrirCin}>
-          <IdCard className="h-4 w-4" />
-          Visiteur non-abonné (F3)
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="secondary" size="sm" className="rounded-full" onClick={onOuvrirRecherche}>
+            <Search className="h-4 w-4" />
+            Rechercher par nom (F2)
+          </Button>
+          <Button variant="secondary" size="sm" className="rounded-full" onClick={onOuvrirCin}>
+            <IdCard className="h-4 w-4" />
+            Visiteur non-abonné (F3)
+          </Button>
+        </div>
       </div>
     </div>
   )
