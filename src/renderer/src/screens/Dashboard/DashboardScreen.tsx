@@ -1,5 +1,7 @@
 import { useEffect, useState, type JSX } from 'react'
+import { FileSpreadsheet, FileText } from 'lucide-react'
 import type { FiltrePeriode, TableauDeBord } from '@shared/stats'
+import { Button } from '@renderer/components/ui/button'
 import { ParametresGate } from '@renderer/screens/Parametres/ParametresGate'
 import { FiltrePeriodeControle } from './FiltrePeriodeControle'
 import { CarteIndicateur } from './CarteIndicateur'
@@ -23,6 +25,8 @@ function DashboardContenu(): JSX.Element {
   const [filtre, setFiltre] = useState<FiltrePeriode>({ type: 'mois' })
   const [tableau, setTableau] = useState<TableauDeBord | null>(null)
   const [erreur, setErreur] = useState<string | null>(null)
+  const [exportEnCours, setExportEnCours] = useState<'excel' | 'pdf' | null>(null)
+  const [messageExport, setMessageExport] = useState<string | null>(null)
 
   useEffect(() => {
     if (filtre.type === 'personnalisee' && (!filtre.dateDebut || !filtre.dateFin)) return
@@ -33,11 +37,38 @@ function DashboardContenu(): JSX.Element {
       .catch(() => setErreur('Impossible de calculer les statistiques pour cette periode.'))
   }, [filtre])
 
+  async function handleExporter(format: 'excel' | 'pdf'): Promise<void> {
+    setExportEnCours(format)
+    setMessageExport(null)
+    try {
+      const chemin =
+        format === 'excel' ? await window.api.stats.exporterExcel(filtre) : await window.api.stats.exporterPdf(filtre)
+      setMessageExport(chemin ? `Fichier enregistre : ${chemin}` : null)
+    } catch {
+      setMessageExport("Echec de l'export. Reessayez.")
+    } finally {
+      setExportEnCours(null)
+    }
+  }
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 p-8">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-semibold">Tableau de bord</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Tableau de bord</h1>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" disabled={!tableau || !!exportEnCours} onClick={() => void handleExporter('excel')}>
+              <FileSpreadsheet className="h-4 w-4" />
+              {exportEnCours === 'excel' ? 'Export…' : 'Exporter en Excel'}
+            </Button>
+            <Button variant="outline" size="sm" disabled={!tableau || !!exportEnCours} onClick={() => void handleExporter('pdf')}>
+              <FileText className="h-4 w-4" />
+              {exportEnCours === 'pdf' ? 'Export…' : 'Exporter en PDF'}
+            </Button>
+          </div>
+        </div>
         <FiltrePeriodeControle filtre={filtre} onChanger={setFiltre} />
+        {messageExport && <p className="text-sm text-muted-foreground">{messageExport}</p>}
       </div>
 
       {erreur && (

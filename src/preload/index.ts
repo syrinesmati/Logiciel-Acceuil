@@ -40,7 +40,12 @@ const api: ApiRenderer = {
     reordonnerMotifs: (ordreIds) => ipcRenderer.invoke(IPC.parametresReordonnerMotifs, ordreIds)
   },
   stats: {
-    obtenirTableauDeBord: (filtre) => ipcRenderer.invoke(IPC.statsObtenirTableauDeBord, filtre)
+    obtenirTableauDeBord: (filtre) => ipcRenderer.invoke(IPC.statsObtenirTableauDeBord, filtre),
+    exporterExcel: (filtre) => ipcRenderer.invoke(IPC.statsExporterExcel, filtre),
+    exporterPdf: (filtre) => ipcRenderer.invoke(IPC.statsExporterPdf, filtre)
+  },
+  rapport: {
+    signalerPret: () => ipcRenderer.send(IPC.rapportSignalerPret)
   }
 }
 

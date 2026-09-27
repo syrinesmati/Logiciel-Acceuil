@@ -77,6 +77,16 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   qu'avec les fonctions de date de SQLite sur des timestamps UTC. Le renderer ne
   recoit jamais que le resultat agrege final (`TableauDeBord`). Protege par le meme
   `ParametresGate` que les Parametres, mais navigation separee ("Tableau de bord").
+- **Export statistiques** (`services/exportStats.ts`, `exportPdf.ts` +
+  `renderer/src/screens/Rapport/RapportPage.tsx`) : l'Excel est un classeur
+  multi-feuilles construit directement depuis `TableauDeBord`. Le PDF reutilise
+  les MEMES composants de graphique que le tableau de bord (coherence visuelle
+  garantie) sur une page de rapport dediee, chargee via une route par hash
+  (`#/rapport?type=...`, voir `main.tsx`) dans une `BrowserWindow` invisible ;
+  la page signale sa fin de rendu (`ipcRenderer.send('rapport:signaler-pret')`,
+  apres un `requestAnimationFrame` + delai pour laisser Recharts terminer sa
+  passe de mesure) avant que le main appelle `webContents.printToPDF`. Pas de
+  second point d'entree Vite : plus simple a maintenir qu'une config MPA.
 
 ## Donnees et confidentialite
 
@@ -125,8 +135,9 @@ code du process main.**
 ## Etat d'avancement
 
 Voir le plan approuve dans la conversation Claude Code pour le detail des 7 phases.
-Phases 1 a 5 terminees (initialisation, import Syracuse, ecran d'accueil,
-parametres + code PIN, tableau de bord). Phase 6 (export Excel/PDF) a venir.
-Navigation : Accueil (libre) / Tableau de bord (protege par PIN) / Parametres
-(protege par PIN, sous-onglets General, Motifs, Import Syracuse, Lignes a
-corriger, Historique, Securite).
+Phases 1 a 6 terminees (initialisation, import Syracuse, ecran d'accueil,
+parametres + code PIN, tableau de bord, export Excel/PDF). Phase 7 (packaging
+Windows) a venir. Navigation : Accueil (libre) / Tableau de bord (protege par
+PIN, avec boutons d'export Excel/PDF) / Parametres (protege par PIN,
+sous-onglets General, Motifs, Import Syracuse, Lignes a corriger, Historique,
+Securite).

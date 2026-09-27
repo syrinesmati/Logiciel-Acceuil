@@ -67,6 +67,18 @@ abonnes les plus assidus. L'age est toujours calcule a la date de la visite,
 pas a aujourd'hui. Toutes les agregations sont calculees cote main (jamais
 toutes les visites chargees dans le renderer).
 
+Deux boutons d'export pour la periode filtree :
+
+- **Excel** : classeur avec une feuille par indicateur (resume, evolution, par
+  motif, par tranche d'age, par sexe, motif x tranche d'age, heures
+  d'affluence, top 10). Nom de fichier avec la periode, ex.
+  `statistiques_2026-09.xlsx`.
+- **PDF** : rapport mis en page (en-tete avec le nom de la bibliotheque et la
+  periode, indicateurs cles, tous les graphiques, tableau des assidus),
+  genere via une page dediee imprimee en PDF (`webContents.printToPDF`). Les
+  noms arabes s'affichent correctement (meme police locale que le reste de
+  l'app).
+
 ## Parametres (protege par code PIN)
 
 Onglet **Parametres**. Au tout premier acces, l'app demande de definir un code

@@ -48,7 +48,10 @@ export const IPC = {
   parametresModifierMotif: 'parametres:modifier-motif',
   parametresActiverMotif: 'parametres:activer-motif',
   parametresReordonnerMotifs: 'parametres:reordonner-motifs',
-  statsObtenirTableauDeBord: 'stats:obtenir-tableau-de-bord'
+  statsObtenirTableauDeBord: 'stats:obtenir-tableau-de-bord',
+  statsExporterExcel: 'stats:exporter-excel',
+  statsExporterPdf: 'stats:exporter-pdf',
+  rapportSignalerPret: 'rapport:signaler-pret'
 } as const
 
 export interface ApiRenderer {
@@ -109,6 +112,11 @@ export interface ApiRenderer {
   }
   stats: {
     obtenirTableauDeBord: (filtre: FiltrePeriode) => Promise<TableauDeBord>
+    exporterExcel: (filtre: FiltrePeriode) => Promise<string | null>
+    exporterPdf: (filtre: FiltrePeriode) => Promise<string | null>
+  }
+  rapport: {
+    signalerPret: () => void
   }
 }
 
