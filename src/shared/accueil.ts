@@ -21,14 +21,6 @@ export interface ResultatRecherche {
   derniereVisite?: string | null
 }
 
-export interface InscriptionRapidePayload {
-  numeroAbonne: string
-  nomComplet: string
-  dateNaissance: string | null
-  sexe: 'H' | 'F' | null
-  telephone: string | null
-}
-
 /**
  * Visiteur non-abonne (identifie par sa CIN plutot qu'un numero d'abonne
  * Syracuse) : fiche minimale, jamais destinee a etre remplacee par un import.

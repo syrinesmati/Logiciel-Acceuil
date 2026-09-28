@@ -1,10 +1,11 @@
 import { useEffect, useState, type JSX } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import type { AbonnePourFiche, Motif } from '@shared/accueil'
+import { Button } from '@renderer/components/ui/button'
+import { Dialog } from '@renderer/components/ui/dialog'
 import { EcranScan } from './EcranScan'
 import { AvertissementDoubleScan } from './AvertissementDoubleScan'
 import { FicheAbonne } from './FicheAbonne'
-import { FormulaireInscriptionRapide } from './FormulaireInscriptionRapide'
 import { FormulaireNonAbonne } from './FormulaireNonAbonne'
 import { RechercheParNomDialog } from './RechercheParNomDialog'
 import { SaisieCinDialog } from './SaisieCinDialog'
@@ -14,7 +15,6 @@ type Etat =
   | { nom: 'scan' }
   | { nom: 'confirmationDoubleScan'; abonne: AbonnePourFiche; derniereVisite: string | null }
   | { nom: 'fiche'; abonne: AbonnePourFiche }
-  | { nom: 'inscriptionRapide'; numeroAbonne: string }
   | { nom: 'inscriptionNonAbonne'; cin: string }
   | { nom: 'confirmationVisite' }
 
@@ -28,6 +28,7 @@ export function AccueilScreen(): JSX.Element {
   const [erreurInscription, setErreurInscription] = useState<string | null>(null)
   const [rechercheOuverte, setRechercheOuverte] = useState(false)
   const [cinDialogOuvert, setCinDialogOuvert] = useState(false)
+  const [numeroIntrouvable, setNumeroIntrouvable] = useState<string | null>(null)
   const [delaiRetourAutoMs, setDelaiRetourAutoMs] = useState(DELAI_RETOUR_AUTO_PAR_DEFAUT_MS)
 
   useEffect(() => {
@@ -48,7 +49,11 @@ export function AccueilScreen(): JSX.Element {
     try {
       const resultat = await window.api.accueil.rechercherNumero(numero)
       if (!resultat.trouve || !resultat.abonne) {
-        setEtat(mode === 'cin' ? { nom: 'inscriptionNonAbonne', cin: numero } : { nom: 'inscriptionRapide', numeroAbonne: numero })
+        if (mode === 'cin') {
+          setEtat({ nom: 'inscriptionNonAbonne', cin: numero })
+        } else {
+          setNumeroIntrouvable(numero)
+        }
         return
       }
       if (resultat.avertissementDoubleScan) {
@@ -97,30 +102,6 @@ export function AccueilScreen(): JSX.Element {
     }
   }
 
-  async function handleInscriptionRapide(donnees: {
-    nomComplet: string
-    dateNaissance: string | null
-    sexe: 'H' | 'F' | null
-    telephone: string | null
-  }): Promise<void> {
-    if (etat.nom !== 'inscriptionRapide') return
-    setChargement(true)
-    setErreurInscription(null)
-    try {
-      const resultat = await window.api.accueil.inscrireRapide({
-        numeroAbonne: etat.numeroAbonne,
-        ...donnees
-      })
-      if (resultat.succes) {
-        setEtat({ nom: 'fiche', abonne: resultat.abonne })
-      } else {
-        setErreurInscription(resultat.erreur)
-      }
-    } finally {
-      setChargement(false)
-    }
-  }
-
   async function handleInscriptionNonAbonne(donnees: {
     nomComplet: string
     dateNaissance: string | null
@@ -155,7 +136,7 @@ export function AccueilScreen(): JSX.Element {
         <EcranScan
           compteurAujourdhui={compteurAujourdhui}
           chargement={chargement}
-          focusActif={!rechercheOuverte && !cinDialogOuvert}
+          focusActif={!rechercheOuverte && !cinDialogOuvert && !numeroIntrouvable}
           onScanner={traiterNumero}
           onOuvrirRecherche={() => setRechercheOuverte(true)}
           onOuvrirCin={() => setCinDialogOuvert(true)}
@@ -178,16 +159,6 @@ export function AccueilScreen(): JSX.Element {
           chargement={chargement}
           onCompleterSexe={handleCompleterSexe}
           onValider={handleValiderVisite}
-          onAnnuler={retourScan}
-        />
-      )}
-
-      {etat.nom === 'inscriptionRapide' && (
-        <FormulaireInscriptionRapide
-          numeroAbonne={etat.numeroAbonne}
-          chargement={chargement}
-          erreur={erreurInscription}
-          onValider={handleInscriptionRapide}
           onAnnuler={retourScan}
         />
       )}
@@ -220,6 +191,24 @@ export function AccueilScreen(): JSX.Element {
 
       {cinDialogOuvert && (
         <SaisieCinDialog onFermer={() => setCinDialogOuvert(false)} onValider={handleValiderCin} />
+      )}
+
+      {numeroIntrouvable && (
+        <Dialog ouvert onFermer={() => setNumeroIntrouvable(null)} titre="Numéro introuvable" className="max-w-md">
+          <div className="flex flex-col gap-4">
+            <p className="text-sm">
+              Le numéro <span className="font-mono">{numeroIntrouvable}</span> ne correspond à aucun abonné
+              connu.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Les nouveaux abonnés doivent être inscrits dans Syracuse. Si cet abonné vient d&apos;y être
+              inscrit, importez la derniere liste depuis Parametres &gt; Import Syracuse.
+            </p>
+            <div className="flex justify-end">
+              <Button onClick={() => setNumeroIntrouvable(null)}>Fermer</Button>
+            </div>
+          </div>
+        </Dialog>
       )}
     </div>
   )

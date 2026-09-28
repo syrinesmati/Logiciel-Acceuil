@@ -9,7 +9,6 @@ import {
   compterVisitesAujourdhui,
   completerSexe,
   enregistrerVisite,
-  inscrireAbonneRapide,
   inscrireNonAbonne,
   rechercherAbonnePourVisite,
   rechercherAbonnesParNom
@@ -99,31 +98,6 @@ function creerMotif(): number {
     .returning({ id: motifs.id })
     .get().id
 }
-
-describe('inscrireAbonneRapide', () => {
-  it('cree un abonne avec source inscription_rapide', () => {
-    const r = inscrireAbonneRapide(
-      { numeroAbonne: '20001', nomComplet: 'خالد بن علي', dateNaissance: '2010-01-01', sexe: 'H', telephone: '23456789' },
-      db,
-      AUJOURDHUI
-    )
-    expect(r.succes).toBe(true)
-    if (r.succes) {
-      expect(r.abonne.source).toBe('inscription_rapide')
-      expect(r.abonne.age).toBe(16)
-    }
-  })
-
-  it('refuse un numero deja utilise', () => {
-    creerAbonneDeTest('20002', 'Quelqu\'un')
-    const r = inscrireAbonneRapide(
-      { numeroAbonne: '20002', nomComplet: 'Un autre', dateNaissance: null, sexe: null, telephone: null },
-      db,
-      AUJOURDHUI
-    )
-    expect(r.succes).toBe(false)
-  })
-})
 
 describe('inscrireNonAbonne', () => {
   it('cree un abonne leger avec source non_abonne, sans telephone', () => {

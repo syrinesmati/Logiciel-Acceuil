@@ -49,11 +49,13 @@ boutons Homme/Femme si le sexe n'est pas renseigne. Choisissez un ou plusieurs
 motifs (tuiles cliquables ou touches `1`-`9`), puis validez (`Entree`) ou
 annulez (`Echap`). Si le numero est deja passe il y a moins de 5 minutes
 (delai configurable), un avertissement demande confirmation avant de
-continuer. Si le numero est inconnu, un formulaire d'inscription rapide est
-propose (l'abonne sera remplace au prochain import Syracuse, sans perdre ses
-visites). `F2` ouvre une recherche par nom (tolerante aux variantes arabes).
-Sans action pendant 30 secondes (delai configurable), l'ecran revient
-automatiquement au scan.
+continuer. Si le numero est inconnu, une fenetre "Numero introuvable" s'affiche :
+les nouveaux abonnes doivent etre inscrits dans Syracuse, pas depuis ce poste
+(refaire un import Syracuse si l'abonne vient d'y etre inscrit). `F2` ouvre une
+recherche par nom (tolerante aux variantes arabes). `F3` permet d'enregistrer la
+visite d'un visiteur qui n'est pas abonne, identifie par sa CIN (carte d'identite
+nationale) plutot qu'un numero d'abonne. Sans action pendant 30 secondes (delai
+configurable), l'ecran revient automatiquement au scan.
 
 ## Tableau de bord (protege par code PIN)
 

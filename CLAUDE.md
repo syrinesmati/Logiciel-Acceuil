@@ -51,20 +51,25 @@ Cahier des charges complet : `prompt_claude_code_bibliotheque_1.md`.
   `renderer/src/screens/Import/`.
 - **Ecran d'accueil** (`src/main/services/accueilService.ts` + `renderer/src/screens/Accueil/`) :
   machine a etats simple (`scan` / `confirmationDoubleScan` / `fiche` /
-  `inscriptionRapide` / `confirmationVisite`) pilotee par `AccueilScreen.tsx`.
-  Anti-double-scan et retour automatique lisent leur delai dans `parametres`
-  (`services/parametresService.ts`, valeurs par defaut posees au premier lancement).
-  Motifs par defaut poses de la meme facon (`services/motifsService.ts`) —
-  necessaire car `npm run seed` est un script de dev, pas le premier lancement reel.
-  Nettoyage de la saisie douchette dans `services/scanUtils.ts`.
+  `inscriptionNonAbonne` / `confirmationVisite`) pilotee par `AccueilScreen.tsx`.
+  Un numero d'abonne scanne/saisi mais introuvable n'ouvre **plus** de formulaire
+  d'inscription (revu apres la mise en service : les nouveaux abonnes ne doivent
+  etre crees que dans Syracuse, jamais depuis ce poste) — juste une boite de
+  dialogue "Numero introuvable" invitant a refaire l'import Syracuse si besoin ;
+  voir `numeroIntrouvable` dans `AccueilScreen.tsx`. Anti-double-scan et retour
+  automatique lisent leur delai dans `parametres` (`services/parametresService.ts`,
+  valeurs par defaut posees au premier lancement). Motifs par defaut poses de la
+  meme facon (`services/motifsService.ts`) — necessaire car `npm run seed` est un
+  script de dev, pas le premier lancement reel. Nettoyage de la saisie douchette
+  dans `services/scanUtils.ts`.
 - **Visiteur non-abonne** (bouton "Visiteur non-abonne (F3)" sur l'ecran de scan,
-  `SaisieCinDialog.tsx` + `FormulaireNonAbonne.tsx`) : un visiteur sans carte de la
-  mediatheque peut tout de meme etre enregistre, identifie par sa CIN plutot qu'un
-  numero d'abonne Syracuse. Reutilise entierement la table `abonnes` (fiche legere,
-  `source = 'non_abonne'`, `creerAbonneLeger` factorisee avec l'inscription rapide
-  dans `accueilService.ts`) : si la meme CIN revient, sa fiche est retrouvee
-  directement comme un abonne normal (meme anti-double-scan). Jamais rapprochee
-  d'un import Syracuse (contrairement a `inscription_rapide`), pas de telephone.
+  `SaisieCinDialog.tsx` + `FormulaireNonAbonne.tsx`) : seule exception au point
+  ci-dessus — un visiteur sans carte de la mediatheque peut tout de meme etre
+  enregistre, identifie par sa CIN plutot qu'un numero d'abonne Syracuse (source
+  = `non_abonne`, jamais rapprochee d'un import). Reutilise la table `abonnes`
+  (fiche legere, `inscrireNonAbonne` dans `accueilService.ts`) : si la meme CIN
+  revient, sa fiche est retrouvee directement comme un abonne normal (meme
+  anti-double-scan), pas de telephone demande.
 - **Parametres** (`services/pinService.ts`, `parametresService.ts`, `motifsService.ts`
   + `renderer/src/screens/Parametres/`) : zone protegee par un code PIN (scrypt +
   sel, jamais stocke en clair, jamais verifie a nouveau une fois la zone quittee —

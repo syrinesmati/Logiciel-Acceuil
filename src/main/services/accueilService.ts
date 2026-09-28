@@ -8,7 +8,6 @@ import type {
   AbonnePourFiche,
   EnregistrerVisitePayload,
   InscriptionNonAbonnePayload,
-  InscriptionRapidePayload,
   ResultatInscription,
   ResultatRecherche
 } from '@shared/accueil'
@@ -85,29 +84,36 @@ export function rechercherAbonnePourVisite(
   }
 }
 
-function creerAbonneLeger(
-  numero: string,
-  donnees: { nomComplet: string; dateNaissance: string | null; sexe: 'H' | 'F' | null; telephone: string | null },
-  source: 'inscription_rapide' | 'non_abonne',
+/**
+ * Visiteur non-abonne identifie par sa CIN (pas de carte de la mediatheque) :
+ * source = 'non_abonne', jamais rapprochee d'un import Syracuse — seule voie
+ * d'ajout d'une fiche depuis l'accueil, les abonnes eux-memes ne s'inscrivent
+ * que via Syracuse (voir 4.2, revu : plus d'inscription rapide cote accueil).
+ * Si la meme CIN revient plus tard, `rechercherAbonnePourVisite` retrouve
+ * directement sa fiche.
+ */
+export function inscrireNonAbonne(
+  payload: InscriptionNonAbonnePayload,
   db: AppDb,
-  dateReference: Date
+  dateReference: Date = new Date()
 ): ResultatInscription {
-  const existant = db.select({ id: abonnes.id }).from(abonnes).where(eq(abonnes.numeroAbonne, numero)).get()
+  const cin = nettoyerNumeroScanne(payload.cin)
+  const existant = db.select({ id: abonnes.id }).from(abonnes).where(eq(abonnes.numeroAbonne, cin)).get()
   if (existant) {
-    return { succes: false, erreur: `Le numero ${numero} est deja utilise par un abonne existant.` }
+    return { succes: false, erreur: `Le numero ${cin} est deja utilise par un abonne existant.` }
   }
 
   const maintenant = dateReference.toISOString()
   const inseree = db
     .insert(abonnes)
     .values({
-      numeroAbonne: numero,
-      nomComplet: donnees.nomComplet,
-      nomNormalise: normaliserNom(donnees.nomComplet),
-      dateNaissance: donnees.dateNaissance,
-      sexe: donnees.sexe,
-      telephone: donnees.telephone,
-      source,
+      numeroAbonne: cin,
+      nomComplet: payload.nomComplet,
+      nomNormalise: normaliserNom(payload.nomComplet),
+      dateNaissance: payload.dateNaissance,
+      sexe: payload.sexe,
+      telephone: null,
+      source: 'non_abonne',
       datePremierImport: maintenant,
       dateDerniereMaj: maintenant,
       actif: true
@@ -116,30 +122,6 @@ function creerAbonneLeger(
     .get()
 
   return { succes: true, abonne: versAbonnePourFiche(inseree, dateReference) }
-}
-
-/** Inscription rapide (4.2) : source = 'inscription_rapide', remplacee au prochain import Syracuse. */
-export function inscrireAbonneRapide(
-  payload: InscriptionRapidePayload,
-  db: AppDb,
-  dateReference: Date = new Date()
-): ResultatInscription {
-  const numero = nettoyerNumeroScanne(payload.numeroAbonne)
-  return creerAbonneLeger(numero, payload, 'inscription_rapide', db, dateReference)
-}
-
-/**
- * Visiteur non-abonne identifie par sa CIN (pas de carte de la mediatheque) :
- * source = 'non_abonne', jamais rapprochee d'un import Syracuse. Si la meme CIN
- * revient plus tard, `rechercherAbonnePourVisite` retrouve directement sa fiche.
- */
-export function inscrireNonAbonne(
-  payload: InscriptionNonAbonnePayload,
-  db: AppDb,
-  dateReference: Date = new Date()
-): ResultatInscription {
-  const cin = nettoyerNumeroScanne(payload.cin)
-  return creerAbonneLeger(cin, { ...payload, telephone: null }, 'non_abonne', db, dateReference)
 }
 
 export function completerSexe(

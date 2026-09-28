@@ -4,7 +4,6 @@ import {
   completerSexeSchema,
   enregistrerVisiteSchema,
   inscriptionNonAbonneSchema,
-  inscriptionRapideSchema,
   rechercherNumeroSchema,
   rechercherParNomSchema
 } from '@shared/schemas'
@@ -15,7 +14,6 @@ import {
   completerSexe,
   compterVisitesAujourdhui,
   enregistrerVisite,
-  inscrireAbonneRapide,
   inscrireNonAbonne,
   rechercherAbonnePourVisite,
   rechercherAbonnesParNom
@@ -28,11 +26,6 @@ export function enregistrerIpcAccueil(db: AppDb): void {
     const { numero } = rechercherNumeroSchema.parse({ numero: payloadBrut })
     const { delaiAntiDoubleScanSecondes } = obtenirParametresAccueil(db)
     return rechercherAbonnePourVisite(numero, db, delaiAntiDoubleScanSecondes)
-  })
-
-  ipcMain.handle(IPC.accueilInscrireRapide, (_event, payloadBrut) => {
-    const payload = inscriptionRapideSchema.parse(payloadBrut)
-    return inscrireAbonneRapide(payload, db)
   })
 
   ipcMain.handle(IPC.accueilInscrireNonAbonne, (_event, payloadBrut) => {

@@ -45,14 +45,6 @@ export const rechercherNumeroSchema = z.object({
   numero: z.string().min(1)
 })
 
-export const inscriptionRapideSchema = z.object({
-  numeroAbonne: z.string().min(1, "Le numero d'abonne est obligatoire"),
-  nomComplet: z.string().min(1, 'Le nom est obligatoire'),
-  dateNaissance: z.string().nullable(),
-  sexe: z.enum(['H', 'F']).nullable(),
-  telephone: z.string().nullable()
-})
-
 export const inscriptionNonAbonneSchema = z.object({
   cin: z.string().min(1, 'Le numero de CIN est obligatoire'),
   nomComplet: z.string().min(1, 'Le nom est obligatoire'),
